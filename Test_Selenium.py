@@ -4,7 +4,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-webdriver = r"C:\Users\jvine\Downloads\chromedriver_win32\chromedriver.exe"
+webdriver = r"drive/chromedriver"
 driver = Chrome(webdriver)
 
 url = "https://www.waytostay.com/paris-apartments/"
