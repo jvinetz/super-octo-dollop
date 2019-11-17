@@ -31,7 +31,7 @@ def main():
         city_soup = get_info(pl, driver)
         city_page = city_soup.find_all('div', class_="tile")
         for city in city_page:
-            price = re.search(r'(>€\s)([0-9]*)<', str(city)).group(2)
+            price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
             print(price)
             detail = city.p.text
             print(str(detail.split()))
