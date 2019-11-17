@@ -11,10 +11,6 @@ def main():
     soup = get_info(url, driver)
     # print(soup.prettify()) #prints the 'inspect' of the hole page
 
-    # csv_file = open('TripAdvisor.csv', 'w')
-    # csv_writer = csv.writer(csv_file)
-    # csv_writer.writerow(['Price', 'Contact info'])
-
     # find place page
     page = soup.find_all('div', class_="destination-info")
     page_list = []
@@ -29,24 +25,20 @@ def main():
     for pl in page_list:
         driver = set_driver()
         city_soup = get_info(pl, driver)
-        city_page = city_soup.find_all('div', class_="tile")
-        for city in city_page:
-            price = re.search(r'(>\s)([0-9]*)<', str(city)).group(2)
-            print(price)
-            detail = city.p.text
-            print(str(detail.split()))
+        for i in range(10):
+            city_page = city_soup.find_all('div', class_="tile")
+            for city in city_page:
+                price = re.search(r'(>[$€]\s)([0-9]*)<', str(city)).group(2)
+                print(price)
+                detail = city.p.text
+                print(str(detail.split()))
+                apartment_link = city.a['href']
+                print(apartment_link)
+            next_button = driver.find_element_by_class_name('next')
+            next_button.click()
+            city_soup = get_info(pl+'#page='+str(2+i)+'&perPage=12', driver)
         driver.close()
 
-
-    # new_source = requests.get(web_page)
-    # new_source = new_source.text
-    # new_soup = BeautifulSoup(driver.page_source, 'lxml')
-    # element = new_soup.find('div', class_="large-6 columns")
-    # print(element)
-
-
-#     csv_writer.writerow([prices[i], phones[i]])
-# csv_file.close()
 
 def set_driver():
     webdriver = r"drive/chromedriver"
