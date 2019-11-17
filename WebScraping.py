@@ -34,7 +34,7 @@ def main():
             price = re.search(r'(>€\s)([0-9]*)<', str(city)).group(2)
             print(price)
             detail = city.p.text
-            print(str(detail))
+            print(str(detail.split()))
         driver.close()
 
 
