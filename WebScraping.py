@@ -25,18 +25,30 @@ def main():
         page_list.append(web_page)
     driver.close()
 
-    apartment_info = {}
+
+    dic = {}
     for pl in page_list:
         driver = set_driver()
         city_soup = get_info(pl, driver)
         city_page = city_soup.find_all('div', class_="tile")
+        dic[pl] = {}
         for city in city_page:
             price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
-            print(price)
-            detail = city.p.text
-            print(str(detail.split()))
-        driver.close()
+            page_link = city.a['href']
+            detail = city.p.text.split()
 
+            dic[pl][page_link] = {}
+            dic[pl][page_link]['sleeps'] = detail[1]
+            dic[pl][page_link]['area_sqm'] = detail[2]
+            dic[pl][page_link]['bedrooms'] = detail[4]
+            dic[pl][page_link]['bathroom'] = detail[6]
+            dic[pl][page_link]['price'] = price
+        print(dic[pl])
+        driver.close()
+    #df = pd.DataFrame(columns=['link', 'sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'city', 'price'])
+    df = pd.DataFrame(dic)
+    df.to_csv(r'csv/data.csv')
+    print(df.head())
 
     # new_source = requests.get(web_page)
     # new_source = new_source.text
