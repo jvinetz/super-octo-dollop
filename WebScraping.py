@@ -34,9 +34,7 @@ def main():
                 print(str(detail.split()))
                 apartment_link = city.a['href']
                 print(apartment_link)
-            next_button = driver.find_element_by_class_name('next')
-            next_button.click()
-            city_soup = get_info(pl+'#page='+str(2+i)+'&perPage=12', driver)
+            city_soup = next_page(driver)
         driver.close()
 
 
@@ -51,6 +49,14 @@ def get_info(url, driver):
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     soup = BeautifulSoup(driver.page_source, "html.parser")
     return soup
+
+
+def next_page(driver):
+    next_button = driver.find_element_by_class_name('next')
+    next_button.click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    city_soup = BeautifulSoup(driver.page_source, "html.parser")
+    return city_soup
 
 
 def test():
