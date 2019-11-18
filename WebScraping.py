@@ -22,20 +22,32 @@ def main():
     driver.close()
 
     apartment_info = {}
-    for pl in page_list:
+    for pl in page_list[18:]:
         driver = set_driver()
         city_soup = get_info(pl, driver)
-        for i in range(10):
+        try:
+            max_pages = city_soup.find('a', class_="last")
+        except AttributeError:
+            max_pages = city_soup.find_all('a', class_="page")[-1]
+        try:
+            num_pages = int(max_pages.text) - 1
+        except AttributeError:
+            num_pages = 1
+        except ValueError:
+            num_pages = 0
+        for i in range(num_pages):
             city_page = city_soup.find_all('div', class_="tile")
             for city in city_page:
-                price = re.search(r'(>[$€]\s)([0-9]*)<', str(city)).group(2)
+                price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
                 print(price)
                 detail = city.p.text
                 print(str(detail.split()))
                 apartment_link = city.a['href']
                 print(apartment_link)
-            city_soup = next_page(driver)
+            if num_pages != 1:
+                city_soup = next_page(driver, i, pl)
         driver.close()
+    driver.quit()
 
 
 def set_driver():
@@ -51,11 +63,9 @@ def get_info(url, driver):
     return soup
 
 
-def next_page(driver):
-    next_button = driver.find_element_by_class_name('next')
-    next_button.click()
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    city_soup = BeautifulSoup(driver.page_source, "html.parser")
+def next_page(driver, i, pl):
+    url = pl + '#page=' + str(i + 2) + '&perPage=12'
+    city_soup = get_info(url, driver)
     return city_soup
 
 
