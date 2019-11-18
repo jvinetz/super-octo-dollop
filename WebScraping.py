@@ -1,3 +1,5 @@
+"""WayToStay Scrapping By Julian Vinetz & Maikel Sitbon """
+
 from selenium.webdriver import Chrome
 import pandas as pd
 import re
@@ -72,12 +74,14 @@ def main():
 # csv_file.close()
 
 def set_driver():
+    """Set-up the driver"""
     webdriver = r"drive/chromedriver"
     driver = Chrome(webdriver)
     return driver
 
 
 def get_info(url, driver):
+    """Set up Beautiful Soup"""
     driver.get(url)
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -85,6 +89,7 @@ def get_info(url, driver):
 
 
 def next_page(driver, i, pl):
+    """Allow to navigate between pages"""
     url = pl + '#page=' + str(i + 2) + '&perPage=12'
     city_soup = get_info(url, driver)
     return city_soup
