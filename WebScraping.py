@@ -30,26 +30,28 @@ def main():
     for pl in page_list:
         driver = set_driver()
         city_soup = get_info(pl, driver)
-        city_page = city_soup.find_all('div', class_="tile")
         dic[pl] = {}
-        for city in city_page:
-            price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
-            page_link = city.a['href']
-            detail = city.p.text.split()
+        for i in range(10):
+            city_page = city_soup.find_all('div', class_="tile")
+            for city in city_page:
+                price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
+                page_link = city.a['href']
+                detail = city.p.text.split()
 
-            dic[pl][page_link] = {}
-            dic[pl][page_link]['sleeps'] = detail[1]
-            dic[pl][page_link]['area_sqm'] = detail[2]
-            dic[pl][page_link]['bedrooms'] = detail[4]
-            dic[pl][page_link]['bathroom'] = detail[6]
-            dic[pl][page_link]['price'] = price
-        print(dic[pl])
+                dic[pl][page_link] = {}
+                dic[pl][page_link]['sleeps'] = detail[1]
+                dic[pl][page_link]['area_sqm'] = detail[2]
+                dic[pl][page_link]['bedrooms'] = detail[4]
+                dic[pl][page_link]['bathroom'] = detail[6]
+                dic[pl][page_link]['price'] = price
+            city_soup = next_page(driver)
+            print(dic[pl])
         driver.close()
     #df = pd.DataFrame(columns=['link', 'sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'city', 'price'])
     df = pd.DataFrame(dic)
     df.to_csv(r'csv/data.csv')
     print(df.head())
-
+    driver.quit()
     # new_source = requests.get(web_page)
     # new_source = new_source.text
     # new_soup = BeautifulSoup(driver.page_source, 'lxml')
@@ -71,6 +73,14 @@ def get_info(url, driver):
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     soup = BeautifulSoup(driver.page_source, "html.parser")
     return soup
+
+
+def next_page(driver):
+    next_button = driver.find_element_by_class_name('next')
+    next_button.click()
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    city_soup = BeautifulSoup(driver.page_source, "html.parser")
+    return city_soup
 
 
 def test():
