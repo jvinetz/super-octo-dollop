@@ -25,30 +25,39 @@ def main():
         page_list.append(web_page)
     driver.close()
 
-
-    dic = {}
+    arr = []
+    #index = 0
     for pl in page_list:
         driver = set_driver()
         city_soup = get_info(pl, driver)
-        dic[pl] = {}
-        for i in range(10):
+        try:
+            max_pages = city_soup.find('a', class_="last")
+        except AttributeError:
+            max_pages = city_soup.find_all('a', class_="page")[-1]
+        try:
+            num_pages = int(max_pages.text) - 1
+        except AttributeError:
+            num_pages = 1
+        except ValueError:
+            num_pages = 0
+        for i in range(num_pages):
             city_page = city_soup.find_all('div', class_="tile")
             for city in city_page:
                 price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
                 page_link = city.a['href']
                 detail = city.p.text.split()
-
-                dic[pl][page_link] = {}
-                dic[pl][page_link]['sleeps'] = detail[1]
-                dic[pl][page_link]['area_sqm'] = detail[2]
-                dic[pl][page_link]['bedrooms'] = detail[4]
-                dic[pl][page_link]['bathroom'] = detail[6]
-                dic[pl][page_link]['price'] = price
-            city_soup = next_page(driver)
-            print(dic[pl])
+                dic = {"city": pl, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
+                       'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'curency': price[0]}
+                arr.append(dic)
+            if num_pages != 1:
+                city_soup = next_page(driver, i, pl)
+            print(arr)
         driver.close()
-    #df = pd.DataFrame(columns=['link', 'sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'city', 'price'])
-    df = pd.DataFrame(dic)
+        #index += 1
+        #if index == 4:
+        #   break
+    # df = pd.DataFrame(columns=['link', 'sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'city', 'price'])
+    df = pd.DataFrame(arr)
     df.to_csv(r'csv/data.csv')
     print(df.head())
     driver.quit()
@@ -75,11 +84,9 @@ def get_info(url, driver):
     return soup
 
 
-def next_page(driver):
-    next_button = driver.find_element_by_class_name('next')
-    next_button.click()
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    city_soup = BeautifulSoup(driver.page_source, "html.parser")
+def next_page(driver, i, pl):
+    url = pl + '#page=' + str(i + 2) + '&perPage=12'
+    city_soup = get_info(url, driver)
     return city_soup
 
 
