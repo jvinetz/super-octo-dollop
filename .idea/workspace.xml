@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/cmd_subparsers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/super-octo-dollop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/super-octo-dollop.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebScraping.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebScraping.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/command_line.py" beforeDir="false" afterPath="$PROJECT_DIR$/command_line.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/csv/data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/data.csv" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,7 +35,7 @@
   <component name="ProjectId" id="1TbhjAGVVTiGKZ0Laq8orf33DvT" />
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -82,7 +84,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/command_line.py" />
-      <option name="PARAMETERS" value="paris -p --arga1=1 --arga2=1000" />
+      <option name="PARAMETERS" value="--city berlin" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -119,7 +121,14 @@
       <option name="presentableId" value="Default" />
       <updated>1575278360047</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Command line">
+      <created>1575300369079</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1575300369079</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -163,6 +172,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Command line first try" />
-    <option name="LAST_COMMIT_MESSAGE" value="Command line first try" />
+    <MESSAGE value="Command line" />
+    <option name="LAST_COMMIT_MESSAGE" value="Command line" />
   </component>
 </project>

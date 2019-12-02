@@ -1,12 +1,17 @@
+import sys
+from WebScraping import global_update
 import argparse
 import re
 from selenium.webdriver import Chrome
 import pandas as pd
 from bs4 import BeautifulSoup
 
+URL = "https://www.waytostay.com/"
+CSV = r'csv/data.csv'
+
 
 def update_db(user_city):
-    url = "https://www.waytostay.com/"
+    url = URL
     driver = set_driver()
     soup = get_info(url, driver)
     web_page = find_city(soup, user_city)
@@ -17,7 +22,7 @@ def update_db(user_city):
     num_pages = find_num_pages(city_soup)
 
     df = create_table(num_pages, web_page, driver, city_soup)
-    df.to_csv(r'csv/data.csv')
+    df.to_csv(CSV)
 
     driver.close()
     driver.quit()
@@ -57,6 +62,7 @@ def find_num_pages(city_soup):
 def find_city(soup, user_city):
     """Find the wanted city page"""
     page = soup.find_all('div', class_="destination-info")
+    web_page = ""
     for p in page:
         raw_data = str(p)
         page = re.search('href=(.*)/', raw_data).group()
@@ -120,7 +126,8 @@ def get_results(args):
 def parser():
     """The function calls a function from [add, multiply, divide, subtract] depending on the input from the user """
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('city', help='city')
+    parser.add_argument('-G', action="store_true", help='price')
+    parser.add_argument('--city', help='city')
     parser.add_argument('-p', action="store_true", help='price')
     parser.add_argument('--argp1', nargs='?', default=0, type=int, help='lower limit')
     parser.add_argument('--argp2', nargs='?', type=int, help='higher limit')
@@ -142,10 +149,16 @@ def parser():
 
 def main():
     args = parser()
-    update_db(args.city)
-    #print(args)
-    results = get_results(args)
-    print(results)
+    if args.city:
+        update_db(args.city)
+        results = get_results(args)
+        print(results)
+    elif args.G:
+        global_update()
+        print("The database has been created")
+    else:
+        print("There were not enough parameters to scrap")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
