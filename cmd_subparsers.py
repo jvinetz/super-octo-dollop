@@ -12,19 +12,11 @@ def update_db(user_city):
     web_page = find_city(soup, user_city)
     driver.close()
 
+    arr = []
     driver = set_driver()
     city_soup = get_info(web_page, driver)
     num_pages = find_num_pages(city_soup)
 
-    df = create_table(num_pages, web_page, driver)
-    df.to_csv(r'csv/data.csv')
-
-    driver.close()
-    driver.quit()
-
-
-def create_table(num_pages, web_page, driver):
-    arr = []
     for i in range(num_pages):
         city_page = city_soup.find_all('div', class_="tile")
         for city in city_page:
@@ -37,7 +29,10 @@ def create_table(num_pages, web_page, driver):
         if num_pages != 1:
             city_soup = next_page(driver, i, web_page)
     df = pd.DataFrame(arr)
-    return df
+    df.to_csv(r'csv/data.csv')
+    print(df.head())
+    driver.close()
+    driver.quit()
 
 
 def find_num_pages(city_soup):
@@ -89,63 +84,55 @@ def next_page(driver, i, pl):
 
 def get_results(args):
     df = pd.read_csv(r'csv/data.csv')
-
     if args.p:
         if args.argp2:
             df = df[df['price'] < args.argp2]
         df = df[df['price'] > args.argp1]
-
-    if args.s:
-        if args.args2:
-            df = df[df['sleeps'] < args.args2]
-        df = df[df['sleeps'] > args.args1]
-
-    if args.a:
-        if args.arga2:
-            df = df[df['area_sqm'] < args.arga2]
-        df = df[df['area_sqm'] > args.arga1]
-
-    if args.be:
-        if args.argbe2:
-            df = df[df['bedrooms'] < args.argbe2]
-        df = df[df['bedrooms'] > args.argbe1]
-
-    if args.ba:
-        if args.argba2:
-            df = df[df['bathroom'] < args.argba2]
-        df = df[df['bathroom'] > args.argba1]
     return df
 
 
 def parser():
     """The function calls a function from [add, multiply, divide, subtract] depending on the input from the user """
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('city', help='city')
-    parser.add_argument('-p', action="store_true", help='price')
-    parser.add_argument('--argp1', nargs='?', default=0, type=int, help='lower limit')
-    parser.add_argument('--argp2', nargs='?', type=int, help='higher limit')
-    parser.add_argument('-s', action="store_true", help='sleeps')
-    parser.add_argument('--args1', nargs='?', default=0, type=int, help='lower limit')
-    parser.add_argument('--args2', nargs='?', type=int, help='higher limit')
-    parser.add_argument('-a', action="store_true", help='area')
-    parser.add_argument('--arga1', nargs='?', default=0, type=int, help='lower limit')
-    parser.add_argument('--arga2', nargs='?', type=int, help='higher limit')
-    parser.add_argument('-be', action="store_true", help='bedrooms')
-    parser.add_argument('--argbe1', nargs='?', default=0, type=int, help='lower limit')
-    parser.add_argument('--argbe2', nargs='?', type=int, help='higher limit')
-    parser.add_argument('-ba', action="store_true", help='bathrooms')
-    parser.add_argument('--argba1', nargs='?', default=0, type=int, help='lower limit')
-    parser.add_argument('--argba2', nargs='?', type=int, help='higher limit')
-    args = parser.parse_args()
+    subparsers = parser.add_subparsers(help='different items')
+
+    parser.add_argument("city", type=str, help="City")
+
+    p_parser = subparsers.add_parser("p")
+    p_parser.add_argument('-argp1', nargs='?', const=0, type=int, help='lower limit')
+    p_parser.add_argument('-argp2', nargs='?', type=int, help='higher limit')
+
+    s_parser = subparsers.add_parser("s")
+    s_parser.add_argument('-args1', nargs='?', const=0, type=int, help='lower limit')
+    s_parser.add_argument('-args2', nargs='?', type=int, help='higher limit')
+
+    a_parser = subparsers.add_parser("a")
+    a_parser.add_argument('-arga1', nargs='?', const=0, type=int, help='lower limit')
+    a_parser.add_argument('-arga2', nargs='?', type=int, help='higher limit')
+
+    be_parser = subparsers.add_parser("-be")
+    be_parser.add_argument('-argbe1', nargs='?', const=0, type=int, help='lower limit')
+    be_parser.add_argument('-argbe2', nargs='?', type=int, help='higher limit')
+
+    ba_parser = subparsers.add_parser("-ba")
+    ba_parser.add_argument('-argba1', nargs='?', const=0, type=int, help='lower limit')
+    ba_parser.add_argument('-argba2', nargs='?', type=int, help='higher limit')
+
+    pargs = p_parser.parse_args()
+    sargs = s_parser.parse_args()
+    aargs = a_parser.parse_args()
+    beargs = be_parser.parse_args()
+    baargs = ba_parser.parse_args()
+    args = [pargs, sargs, aargs, beargs, baargs]
     return args
 
 
 def main():
     args = parser()
-    update_db(args.city)
-    #print(args)
-    results = get_results(args)
-    print(results)
+    print(args)
+    #print(get_results(args))
+    #update_db(args.city)
+    #print(globals()[get_results](city, pl, ph, sl, sh, al, ah, bel, beh, bal, bah))
 
 
 if __name__ == "__main__":
