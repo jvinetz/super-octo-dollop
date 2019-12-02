@@ -16,14 +16,14 @@ def update_db(user_city):
     city_soup = get_info(web_page, driver)
     num_pages = find_num_pages(city_soup)
 
-    df = create_table(num_pages, web_page, driver)
+    df = create_table(num_pages, web_page, driver, city_soup)
     df.to_csv(r'csv/data.csv')
 
     driver.close()
     driver.quit()
 
 
-def create_table(num_pages, web_page, driver):
+def create_table(num_pages, web_page, driver, city_soup):
     arr = []
     for i in range(num_pages):
         city_page = city_soup.find_all('div', class_="tile")
