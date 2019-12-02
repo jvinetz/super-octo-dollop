@@ -6,6 +6,7 @@ import pandas as pd
 import re
 import requests
 from bs4 import BeautifulSoup
+from DB import *
 
 
 def main():
@@ -76,7 +77,7 @@ def main():
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = r"drive/chromedriver"
+    webdriver = os.path.join(r"drive","chromedriver" )
     driver = Chrome(webdriver)
     return driver
 

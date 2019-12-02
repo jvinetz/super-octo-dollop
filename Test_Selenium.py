@@ -3,10 +3,11 @@ import pandas as pd
 import re
 import requests
 from bs4 import BeautifulSoup
+import os
 
 
 def main():
-    webdriver = r"drive/chromedriver"
+    webdriver = os.path.join(r"drive","chromedriver" )
     driver = Chrome(webdriver)
 
     url = "https://www.waytostay.com/paris-apartments/"
