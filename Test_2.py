@@ -51,3 +51,10 @@ print(element)
 #     print(prices[i], phones[i])
 #
 # csv_file.close()
+
+try:
+    max_pages = city_soup.find_all('a', class_="page")[-1]
+    print('max pages', max_pages)
+except AttributeError:
+    max_pages = 2
+    print('max pages', max_pages)

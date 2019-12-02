@@ -9,6 +9,7 @@ DB_FILENAME = 'WTS.db'
 df = pd.DataFrame()
 print(type(df))
 
+
 def create_DB():
     if os.path.exists(DB_FILENAME):
         os.remove(DB_FILENAME)
@@ -66,7 +67,7 @@ def first_fill(data: pd.core.frame.DataFrame):
                         ) VALUES (?, ?,?,?,?, ?, ?, ?)''',
                         [index_trip, row['city'], row['page_link'], row['sleeps'], row['area_sqm'],
                          row['bedrooms'], row['bathroom'], row['price'], curr[row['curency']]])
-            index_trip +=1
+            index_trip += 1
 
             if index_trip % 10000 == 0:
                 con.commit()
@@ -104,4 +105,3 @@ def search_bedroom(b_min=0, b_max=sys.maxsize):
 
 def search_bathroom(b_min=0, b_max=sys.maxsize):
     return None
-
