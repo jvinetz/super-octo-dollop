@@ -11,6 +11,7 @@ CSV = r'csv/data.csv'
 
 
 def update_db(user_city):
+    """Updates the database with the information the user placed as input"""
     url = URL
     driver = set_driver()
     soup = get_info(url, driver)
@@ -29,6 +30,7 @@ def update_db(user_city):
 
 
 def create_table(num_pages, web_page, driver, city_soup):
+    """Scraps the input page and returns a dataframe with the information"""
     arr = []
     for i in range(num_pages):
         city_page = city_soup.find_all('div', class_="tile")
@@ -46,6 +48,7 @@ def create_table(num_pages, web_page, driver, city_soup):
 
 
 def find_num_pages(city_soup):
+    """Finds out the number of pages tha the city has and returns it"""
     try:
         max_pages = city_soup.find('a', class_="last")
     except AttributeError:
@@ -94,6 +97,7 @@ def next_page(driver, i, pl):
 
 
 def get_results(args):
+    """Filters the dataframe with the ranges selected by the user"""
     df = pd.read_csv(r'csv/data.csv')
 
     if args.p:
