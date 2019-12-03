@@ -10,6 +10,7 @@ import DB
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
+con = DB.my_db
 
 
 def update_db(user_city):
@@ -154,10 +155,16 @@ def parser():
     return args
 
 
+def get_query_df(query):
+    df = pd.read_sql_query(query, con)
+    return df
+
+
 def main():
     args = parser()
     if args.city:
-        df = update_db(args.city)
+        update_db(args.city)
+        df = get_query_df("""SELECT * FROM place""")
         results = get_results(args, df)
         print("The city has been updated/created in the database")
         print(results)

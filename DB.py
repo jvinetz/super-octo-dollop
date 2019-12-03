@@ -79,12 +79,27 @@ def first_fill(data: pd.core.frame.DataFrame):
     my_db.commit()
 
 
-def update_city(city):
+def update_city(city, my_cursor, df_new):
+    df_old = get_query_df("SELECT * FROM place WHERE city = " + city)
+    query_1 = "UPDATE place SET variable = ... " \
+            "WHERE city = " + city + \
+            " AND "
+    query_2 = "DELETE FROM place WHERE home_id NOT IN "
+    my_cursor.execute(query_1)
+    my_cursor.execute(query_2)
+    my_db.commit()
+
+    #Variables: home_id, city, page_link, sleeps, area_sqm, bedrooms, bathroom, price, curency_ID
     return None
 
 
 def update_global():
     return None
+
+
+def get_query_df(query):
+    df = pd.read_sql_query(query, con)
+    return df
 
 
 def search_price(p_min=0, p_max=sys.maxsize):

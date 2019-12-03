@@ -1,5 +1,6 @@
 """WayToStay Scrapping By Julian Vinetz & Maikel Sitbon
 GitHub: https://github.com/jvinetz/super-octo-dollop.git"""
+import os
 
 from selenium.webdriver import Chrome
 import pandas as pd
