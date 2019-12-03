@@ -1,3 +1,4 @@
+import sqlite3
 import os
 import sys
 import random
@@ -5,6 +6,10 @@ import enums
 import pandas as pd
 import mysql.connector
 
+
+
+
+DB_FILENAME = 'WTS.db'
 my_db = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -13,34 +18,41 @@ my_db = mysql.connector.connect(
     database='Scraper'
 )
 
-my_cursor = my_db.cursor()
+mycursor = my_db.cursor()
+try:
+    mycursor.execute(" CREATE DATABASE Scraper ")
+except mysql.connector.errors.DatabaseError:
+    print('database already exist')
+
+mycursor.execute(" SHOW DATABASES ")
+for db in mycursor:
+    print(db)
 
 
 def create_db():
-    try:
-        my_cursor.execute(" CREATE DATABASE Scraper ")
-    except mysql.connector.errors.DatabaseError:
-        print('database already exist')
+    if os.path.exists(DB_FILENAME):
+        os.remove(DB_FILENAME)
 
-
-def create_tables():
-    my_cursor.execute('''CREATE TABLE currency (
-                            id INTEGER(10) PRIMARY KEY, 
-                            name VARCHAR(255)
+    with sqlite3.connect(DB_FILENAME) as con:
+        cur = con.cursor()
+        cur.execute('''CREATE TABLE currency (
+                            id INT PRIMARY KEY, 
+                            name VARCHAR(50)
                             )''')
 
-    my_cursor.execute('''CREATE TABLE place (
-                            home_id INTEGER(10) PRIMARY KEY, 
+        cur.execute('''CREATE TABLE place (
+                            home_id INT PRIMARY KEY, 
                             city VARCHAR(100),
                             page_link VARCHAR(1000),
-                            sleeps INTEGER(10),
-                            area_sqm INTEGER(10),
-                            bedrooms INTEGER(10), 
-                            bathroom INTEGER(10),
-                            price INTEGER(10),
-                            curency_ID INTEGER(10),
+                            sleeps INT,
+                            area_sqm INT,
+                            bedrooms INT, 
+                            bathroom INT,
+                            price INT,
+                            curency_ID,
                             FOREIGN KEY (curency_ID) REFERENCES currency (id))''')
-
+        con.commit()
+        cur.close()
 
 
 def first_fill(data: pd.core.frame.DataFrame):
