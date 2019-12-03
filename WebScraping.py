@@ -8,76 +8,78 @@ import requests
 from bs4 import BeautifulSoup
 from DB1 import *
 
+URL = "https://www.waytostay.com/"
+CSV = r'csv/data.csv'
 
-def main():
-    url = "https://www.waytostay.com/"
+
+def global_update():
+    """Updates the entire database"""
+    url = URL
     driver = set_driver()
     soup = get_info(url, driver)
-    # print(soup.prettify()) #prints the 'inspect' of the hole page
+    page_list = collect_pages(soup)
+    driver.close()
 
-    # csv_file = open('TripAdvisor.csv', 'w')
-    # csv_writer = csv.writer(csv_file)
-    # csv_writer.writerow(['Price', 'Contact info'])
+    arr = []
+    for pl in page_list:
+        scrap(pl, arr)
 
-    # find place page
+    df = pd.DataFrame(arr)
+    df.to_csv(CSV)
+
+    driver.quit()
+
+
+def scrap(pl, arr):
+    """Scraps evert page and returns the information in a list of dictionaries"""
+    driver = set_driver()
+    city_soup = get_info(pl, driver)
+    num_pages = find_num_pages(city_soup)
+    for i in range(num_pages):
+        city_page = city_soup.find_all('div', class_="tile")
+        for city in city_page:
+            price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
+            page_link = city.a['href']
+            detail = city.p.text.split()
+            dic = {"city": pl, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
+                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'curency': price[0]}
+            arr.append(dic)
+        if num_pages != 1:
+            city_soup = next_page(driver, i, pl)
+        print(arr)
+    driver.close()
+
+
+def collect_pages(soup):
+    """Gets the the page of each city and returns all of them in a list"""
     page = soup.find_all('div', class_="destination-info")
     page_list = []
     for p in page:
         raw_data = str(p)
         page = re.search('href=(.*)/', raw_data).group()
-        web_page = "https://www.waytostay.com" + page[6:]
+        web_page = URL[:-1] + page[6:]
         page_list.append(web_page)
-    driver.close()
-
-    arr = []
-    #index = 0
-    for pl in page_list:
-        driver = set_driver()
-        city_soup = get_info(pl, driver)
-        try:
-            max_pages = city_soup.find('a', class_="last")
-        except AttributeError:
-            max_pages = city_soup.find_all('a', class_="page")[-1]
-        try:
-            num_pages = int(max_pages.text) - 1
-        except AttributeError:
-            num_pages = 1
-        except ValueError:
-            num_pages = 0
-        for i in range(num_pages):
-            city_page = city_soup.find_all('div', class_="tile")
-            for city in city_page:
-                price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
-                page_link = city.a['href']
-                detail = city.p.text.split()
-                dic = {"city": pl, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
-                       'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'curency': price[0]}
-                arr.append(dic)
-            if num_pages != 1:
-                city_soup = next_page(driver, i, pl)
-            print(arr)
-        driver.close()
-        #index += 1
-        #if index == 4:
-        #   break
-    # df = pd.DataFrame(columns=['link', 'sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'city', 'price'])
-    df = pd.DataFrame(arr)
-    df.to_csv(r'csv/data.csv')
-    print(df.head())
-    driver.quit()
-    # new_source = requests.get(web_page)
-    # new_source = new_source.text
-    # new_soup = BeautifulSoup(driver.page_source, 'lxml')
-    # element = new_soup.find('div', class_="large-6 columns")
-    # print(element)
+    return page_list
 
 
-#     csv_writer.writerow([prices[i], phones[i]])
-# csv_file.close()
+def find_num_pages(city_soup):
+    """Finds out the number of pages tha the city has and returns it"""
+    try:
+        max_pages = city_soup.find('a', class_="last")
+    except AttributeError:
+        max_pages = city_soup.find_all('a', class_="page")[-1]
+    try:
+        num_pages = int(max_pages.text) - 1
+    except AttributeError:
+        num_pages = 1
+    except ValueError:
+        num_pages = 0
+    return num_pages
+
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = os.path.join(r"drive","chromedriver" )
+    webdriver = os.path.join(r"drive", "chromedriver")
     driver = Chrome(webdriver)
     return driver
 
@@ -97,10 +99,5 @@ def next_page(driver, i, pl):
     return city_soup
 
 
-def test():
-    assert (lambda x: x + 1)(1) == 2
-
-
 if __name__ == '__main__':
-    test()
-    main()
+    global_update()
