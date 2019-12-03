@@ -42,44 +42,37 @@ def create_tables():
                             FOREIGN KEY (curency_ID) REFERENCES currency (id))''')
 
 
-
-def first_fill(data: pd.core.frame.DataFrame):
+def first_fill(data: list):
     '''fill the data'''
-    with sqlite3.connect(DB_FILENAME) as con:
-        cur = con.cursor()
 
-        index_curr = 0
-        curr = {}
-        for i in data['curency'].unique():
-            cur.execute('''INSERT INTO currency (
-                                id , 
-                                name 
-                        ) VALUES (?, ?)''',
-                        [index_curr, i])
-            curr[i] = index_curr
-            index_curr += 1
+    currency_form = '''INSERT INTO currency (id ,name ) VALUES (%s, %s)'''
+    place_form = '''INSERT INTO place (
+                        home_id,
+                        city ,
+                        page_link ,
+                        sleeps ,
+                        area_sqm ,
+                        bedrooms , 
+                        bathroom ,
+                        price ,
+                        curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s)'''
+    index_curr = 0
+    curr = {}
+    for i in data['curency'].unique():
+        my_cursor.execute(currency_form,
+                          (index_curr, i))
+        curr[i] = index_curr
+        index_curr += 1
 
-        index_trip = 0
-        for row in data.head().iterrows():
-            cur.execute('''INSERT INTO place (
-                            home_id,
-                            city ,
-                            page_link ,
-                            sleeps ,
-                            area_sqm ,
-                            bedrooms , 
-                            bathroom ,
-                            price ,
-                            curency_ID,
-                        ) VALUES (?, ?,?,?,?, ?, ?, ?)''',
-                        [index_trip, row['city'], row['page_link'], row['sleeps'], row['area_sqm'],
-                         row['bedrooms'], row['bathroom'], row['price'], curr[row['curency']]])
-            index_trip += 1
-
-            if index_trip % 10000 == 0:
-                con.commit()
-    con.commit()
-    cur.close()
+    index_trip = 0
+    for row in data.head().iterrows():
+        elmt = (index_trip, row['city'], row['page_link'], row['sleeps'], row['area_sqm'], row['bedrooms'],
+                row['bathroom'], row['price'], curr[row['curency']])
+        my_cursor.execute(place_form, elmt)
+        index_trip += 1
+        if index_trip % 10000 == 0:
+            my_db.commit()
+    my_db.commit()
 
 
 def update_city(city):
