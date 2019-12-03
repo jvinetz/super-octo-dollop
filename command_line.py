@@ -1,12 +1,15 @@
 import argparse
+import os
 import re
 from selenium.webdriver import Chrome
 import pandas as pd
 from bs4 import BeautifulSoup
 
+URL = "https://www.waytostay.com/"
+CSV = r'csv/data.csv'
 
 def update_db(user_city):
-    url = "https://www.waytostay.com/"
+    url = URL
     driver = set_driver()
     soup = get_info(url, driver)
     web_page = find_city(soup, user_city)
@@ -17,7 +20,7 @@ def update_db(user_city):
     num_pages = find_num_pages(city_soup)
 
     df = create_table(num_pages, web_page, driver, city_soup)
-    df.to_csv(r'csv/data.csv')
+    df.to_csv(CSV)
 
     driver.close()
     driver.quit()
@@ -67,7 +70,7 @@ def find_city(soup, user_city):
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = r"drive/chromedriver"
+    webdriver = os.path.join(r"drive","chromedriver" )
     driver = Chrome(webdriver)
     return driver
 
