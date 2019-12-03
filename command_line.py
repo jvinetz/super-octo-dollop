@@ -1,10 +1,12 @@
 import sys
-from WebScraping import global_update
+import WebScraping
 import argparse
 import re
 from selenium.webdriver import Chrome
 import pandas as pd
 from bs4 import BeautifulSoup
+import DB
+
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
@@ -23,10 +25,12 @@ def update_db(user_city):
     num_pages = find_num_pages(city_soup)
 
     df = create_table(num_pages, web_page, driver, city_soup)
-    df.to_csv(CSV)
+    DB.update_city(df)
 
     driver.close()
     driver.quit()
+
+    return df
 
 
 def create_table(num_pages, web_page, driver, city_soup):
@@ -96,9 +100,8 @@ def next_page(driver, i, pl):
     return city_soup
 
 
-def get_results(args):
+def get_results(args, df):
     """Filters the dataframe with the ranges selected by the user"""
-    df = pd.read_csv(r'csv/data.csv')
 
     if args.p:
         if args.argp2:
@@ -154,21 +157,17 @@ def parser():
 def main():
     args = parser()
     if args.city:
-        update_db(args.city)
-        results = get_results(args)
+        df = update_db(args.city)
+        results = get_results(args, df)
+        print("The city has been updated/created in the database")
         print(results)
     elif args.G:
-        global_update()
-        print("The database has been created")
+        df = WebScraping.global_update()
+        DB.update_global(df)
+        print("The database has been created/updated")
     else:
-        print("There were not enough parameters to scrap")
+        print("There were not enough parameters to scrap, please be sure to input all the parameters needed")
         sys.exit(1)
-
-
-# def get_query_df(query):
-#     with sqlite3.connect(DB_FILENAME) as con:
-#         df = pd.read_sql_query(query,con)
-#     return(df)
 
 
 if __name__ == "__main__":

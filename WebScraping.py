@@ -28,6 +28,7 @@ def global_update():
     df.to_csv(CSV)
 
     driver.quit()
+    return df
 
 
 def scrap(pl, arr):
