@@ -42,9 +42,24 @@ def create_tables():
                             FOREIGN KEY (curency_ID) REFERENCES currency (id))''')
 
 
-def first_fill(data: list):
-    '''fill the data'''
+def first_fill(data: pd.core.frame.DataFrame):
+    """fill the data"""
+# prepare the data:
+    data = data.fillna(-1)
+    # currency:
+    curr_unique = data['curency'].unique().tolist()
+    curr_list = [[i, curr_unique[i]] for i in range(len(curr_unique))]
+    curr = {i[1]: i[0] for i in curr_list}
 
+    # other :
+    data['curency'] = data['curency'].apply(lambda x: curr[x])
+    data['bedrooms'] = data['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
+    data_prep_list = data.values.tolist()
+    print(data_prep_list)
+    for i in range(len(data_prep_list)):
+        data_prep_list[i].insert(0, i)
+
+    # SQL request :
     currency_form = '''INSERT INTO currency (id ,name ) VALUES (%s, %s)'''
     place_form = '''INSERT INTO place (
                         home_id,
@@ -55,23 +70,12 @@ def first_fill(data: list):
                         bedrooms , 
                         bathroom ,
                         price ,
-                        curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s)'''
-    index_curr = 0
-    curr = {}
-    for i in data['curency'].unique():
-        my_cursor.execute(currency_form,
-                          (index_curr, i))
-        curr[i] = index_curr
-        index_curr += 1
+                        curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
 
-    index_trip = 0
-    for row in data.head().iterrows():
-        elmt = (index_trip, row['city'], row['page_link'], row['sleeps'], row['area_sqm'], row['bedrooms'],
-                row['bathroom'], row['price'], curr[row['curency']])
-        my_cursor.execute(place_form, elmt)
-        index_trip += 1
-        if index_trip % 10000 == 0:
-            my_db.commit()
+    # execution :
+    my_cursor.executemany(currency_form, curr_list)
+    my_cursor.executemany(place_form, data_prep_list)
+
     my_db.commit()
 
 
