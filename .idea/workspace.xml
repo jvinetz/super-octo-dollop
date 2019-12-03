@@ -132,7 +132,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575303725806</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Docstrings">
+      <created>1575304150729</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1575304150729</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -178,6 +185,7 @@
     <MESSAGE value="Command line first try" />
     <MESSAGE value="Command line" />
     <MESSAGE value="Interaction between command line and webscraping" />
-    <option name="LAST_COMMIT_MESSAGE" value="Interaction between command line and webscraping" />
+    <MESSAGE value="Docstrings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Docstrings" />
   </component>
 </project>

@@ -165,5 +165,11 @@ def main():
         sys.exit(1)
 
 
+# def get_query_df(query):
+#     with sqlite3.connect(DB_FILENAME) as con:
+#         df = pd.read_sql_query(query,con)
+#     return(df)
+
+
 if __name__ == "__main__":
     main()
