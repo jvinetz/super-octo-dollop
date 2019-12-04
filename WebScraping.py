@@ -1,5 +1,6 @@
 """WayToStay Scrapping By Julian Vinetz & Maikel Sitbon
 GitHub: https://github.com/jvinetz/super-octo-dollop.git"""
+import os
 
 from selenium.webdriver import Chrome
 import pandas as pd
@@ -28,6 +29,7 @@ def global_update():
     df.to_csv(CSV)
 
     driver.quit()
+    return df
 
 
 def scrap(pl, arr):

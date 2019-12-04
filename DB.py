@@ -7,7 +7,7 @@ import mysql.connector
 
 my_db = mysql.connector.connect(
     host="localhost",
-    user="root",
+    user="ITC",
     passwd='ITCITCITC',
     use_pure=True,
     database='Scraper'
@@ -44,7 +44,7 @@ def create_tables():
 
 def first_fill(data: pd.core.frame.DataFrame):
     """fill the data"""
-# prepare the data:
+    # prepare the data:
     data = data.fillna(-1)
     # currency:
     curr_unique = data['curency'].unique().tolist()
@@ -79,12 +79,55 @@ def first_fill(data: pd.core.frame.DataFrame):
     my_db.commit()
 
 
-def update_city(city):
+def update_city(city, my_cursor, df_new):
+    # Delete apartments that are no longer in the page
+    df_old = get_query_df("SELECT * FROM place WHERE city = " + city)
+    old_apartments = (str(list(df_old['home_id'].values))).strip('[]')
+    new_apartments = (str(list(df_new['home_id'].values))).strip('[]')
+    query_1 = "DELETE FROM place WHERE home_id NOT IN ({0})".format(new_apartments)
+    query_2 = """INSERT INTO place (
+                            home_id,
+                            city ,
+                            page_link ,
+                            sleeps ,
+                            area_sqm ,
+                            bedrooms , 
+                            bathroom ,
+                            price ,
+                            curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)
+                            WHERE home_id NOT IN ({0})""".format(old_apartments)
+
+    my_cursor.execute(query_1)
+    my_cursor.executemany(query_2, )
+
+
+    # execution :
+
+
+
+    my_db.commit()
+
+    query_2 = "UPDATE place SET variable = ... " \
+              "WHERE city = " + city + \
+              " AND home_id"
+    query_3 = "UPDATE place SET variable = ... " \
+              "WHERE city = " + city + \
+              " AND home_id"
+
+    my_cursor.execute(query_2)
+    my_db.commit()
+
+    # Variables: home_id, city, page_link, sleeps, area_sqm, bedrooms, bathroom, price, curency_ID
     return None
 
 
 def update_global():
     return None
+
+
+def get_query_df(query):
+    df = pd.read_sql_query(query, con)
+    return df
 
 
 def search_price(p_min=0, p_max=sys.maxsize):
