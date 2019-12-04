@@ -22,8 +22,12 @@ def global_update():
     driver.close()
 
     arr = []
+    i=0
     for pl in page_list:
         scrap(pl, arr)
+        i += 1
+        if i == 1:
+            break
 
     df = pd.DataFrame(arr)
     df.to_csv(CSV)
@@ -40,7 +44,10 @@ def scrap(pl, arr):
     for i in range(num_pages):
         city_page = city_soup.find_all('div', class_="tile")
         for city in city_page:
-            price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
+            try:
+                price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
+            except AttributeError:
+                price = '€ 0'
             page_link = city.a['href']
             detail = city.p.text.split()
             dic = {"city": pl, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
