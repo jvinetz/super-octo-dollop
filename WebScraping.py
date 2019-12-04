@@ -7,7 +7,7 @@ import pandas as pd
 import re
 import requests
 from bs4 import BeautifulSoup
-from DB1 import *
+from DB import *
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
@@ -48,8 +48,8 @@ def scrap(pl, arr):
             arr.append(dic)
         if num_pages != 1:
             city_soup = next_page(driver, i, pl)
-        print(arr)
     driver.close()
+    return arr
 
 
 def collect_pages(soup):
@@ -99,7 +99,3 @@ def next_page(driver, i, pl):
     url = pl + '#page=' + str(i + 2) + '&perPage=12'
     city_soup = get_info(url, driver)
     return city_soup
-
-
-if __name__ == '__main__':
-    global_update()
