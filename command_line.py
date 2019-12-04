@@ -161,22 +161,17 @@ def parser():
     return args
 
 
-def get_query_df(query):
-    df = pd.read_sql_query(query, con)
-    return df
-
-
 def main():
     args = parser()
     if args.city:
         update_db(args.city)
-        df = get_query_df("""SELECT * FROM place""")
+        df = DB.get_query_df("""SELECT * FROM place""")
         results = get_results(args, df)
         print("The city has been updated/created in the database")
         print(results)
     elif args.G:
         df = WebScraping.global_update()
-        DB.update_global(df)
+        print(df)
         print("The database has been created/updated")
     else:
         print("There were not enough parameters to scrap, please be sure to input all the parameters needed")

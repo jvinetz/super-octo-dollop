@@ -1,5 +1,6 @@
 import sys
 import time
+from typing import re
 
 import mysql.connector
 import pandas as pd
@@ -78,7 +79,10 @@ def update_city(city, df_new):
     my_cursor.execute(query_1)
 
     # Insert new apartments
-    df_insert = df_new[df_new['page_link'] != df_old['page_link']]
+    num_col = df_new.columns
+    df_insert = df_new.merge(df_old, on='page_link', how='left', indicator=True).query('_merge == "left_only"').drop('_merge', 1)
+    df_insert = df_insert[df_insert.columns[0:len(df_new.columns)]]
+    df_insert.columns = num_col
     data, data_prep_list, curr_list = prep_data(df_insert)
     my_cursor.execute("SELECT MAX(home_id) FROM place")
     max_id = my_cursor.fetchall()
@@ -97,7 +101,7 @@ def update_city(city, df_new):
     my_cursor.executemany(query_2, data_prep_list)
 
     # Update apartments whose data has been changed
-    num_col = df_new.columns
+
     df_update = df_new.merge(df_old, on='page_link', how='inner', indicator=True)
     df_update = df_update[df_update.columns[0:len(df_new.columns)]]
     df_update.columns = num_col
@@ -125,8 +129,20 @@ def update_city(city, df_new):
     my_db.commit()
 
 
-def update_global():
-    return None
+def update_global(df_new):
+    try:
+        create_db()
+        create_tables()
+    finally:
+        for city in df_new['city'].unique():
+            city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
+            print(city_name)
+            update_city(city_name, df_new[df_new['city'] == city])
+
+
+def get_query_df(query):
+    df = pd.read_sql_query(query, my_db)
+    return df
 
 
 def prep_data(data):
@@ -147,27 +163,3 @@ def prep_data(data):
 def get_query_df(query):
     df = pd.read_sql(query, my_db)
     return df
-
-
-def search_price(p_min=0, p_max=sys.maxsize):
-    return None
-
-
-def search_city(city):
-    return None
-
-
-def search_sleeps(s_min=0, s_max=sys.maxsize):
-    return None
-
-
-def search_area(a_min=0, a_max=sys.maxsize):
-    return None
-
-
-def search_bedroom(b_min=0, b_max=sys.maxsize):
-    return None
-
-
-def search_bathroom(b_min=0, b_max=sys.maxsize):
-    return None
