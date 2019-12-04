@@ -26,7 +26,13 @@ def update_db(user_city):
     num_pages = find_num_pages(city_soup)
 
     df = create_table(num_pages, web_page, driver, city_soup)
-    DB.update_city(df)
+    df['sleeps'].apply(lambda x: int(x))
+    df['area_sqm'].apply(lambda x: int(x))
+    df['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
+    df['bathroom'].apply(lambda x: int(x))
+    df['price'].apply(lambda x: int(x))
+
+    DB.update_city(user_city, df)
 
     driver.close()
     driver.quit()

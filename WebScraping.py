@@ -7,7 +7,7 @@ import pandas as pd
 import re
 import requests
 from bs4 import BeautifulSoup
-from DB1 import *
+from DB import *
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
