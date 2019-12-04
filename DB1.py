@@ -1,6 +1,7 @@
 import DB
 import pandas as pd
 
+DB.create_tables()
 data = pd.read_csv(r'csv/data1.csv')
 data = data.iloc[:, 1:]
 '''print(data)
