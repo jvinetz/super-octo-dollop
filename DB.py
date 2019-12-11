@@ -1,6 +1,6 @@
 import sys
 import time
-from typing import re
+import re
 
 import mysql.connector
 import pandas as pd
