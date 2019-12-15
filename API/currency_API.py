@@ -15,3 +15,4 @@ class Currency():
 tmp = Currency('ILS')
 
 print(1 / tmp.get_rate('EUR'))
+
