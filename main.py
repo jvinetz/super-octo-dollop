@@ -171,6 +171,7 @@ def main():
         print(results)
     elif args.G:
         df = WebScraping.global_update()
+        DB.update_global(df)
         print(df)
         print("The database has been created/updated")
     else:
