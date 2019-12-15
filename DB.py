@@ -1,9 +1,8 @@
-import sys
-import time
 import re
 
 import mysql.connector
 import pandas as pd
+from Fly_API import *
 
 my_db = mysql.connector.connect(
     host="localhost",
@@ -88,7 +87,8 @@ def update_city(city, df_new):
     # Insert new apartments
     num_col = df_new.columns
     if not df_old.empty:
-        df_insert = df_new.merge(df_old, on='page_link', how='left', indicator=True).query('_merge == "left_only"').drop('_merge', 1)
+        df_insert = df_new.merge(df_old, on='page_link', how='left', indicator=True).query(
+            '_merge == "left_only"').drop('_merge', 1)
         df_insert = df_insert[df_insert.columns[0:len(df_new.columns)]]
         df_insert.columns = num_col
     else:
@@ -98,7 +98,7 @@ def update_city(city, df_new):
         my_cursor.execute("SELECT MAX(home_id) FROM place")
         max_id = my_cursor.fetchall()
         for i in range(max_id[0][0] + 1, max_id[0][0] + 1 + len(data_prep_list)):
-            data_prep_list[i-max_id[0][0] - 1].insert(0, i)
+            data_prep_list[i - max_id[0][0] - 1].insert(0, i)
     except TypeError:
         for i in range(len(data_prep_list)):
             data_prep_list[i].insert(0, i)
@@ -155,13 +155,12 @@ def update_global(df_new):
         create_db()
         create_tables()
     finally:
-        i=1
         for city in df_new['city'].unique():
             city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
             print(city_name)
             update_city(city_name, df_new[df_new['city'] == city])
-            if i == 1:
-                break
+        airports()
+
 
 def get_query_df(query):
     df = pd.read_sql_query(query, my_db)
@@ -186,3 +185,15 @@ def prep_data(data):
 def get_query_df(query):
     df = pd.read_sql(query, my_db)
     return df
+
+
+def airports():
+    my_cursor.execute('''CREATE TABLE airports (
+                                city VARCHAR(255) PRIMARY KEY, 
+                                airport_id VARCHAR(255)
+                                )''')
+
+    airports_form = '''INSERT INTO airports (city ,airport_id ) VALUES (%s, %s)'''
+    df = get_query_df('SELECT city FROM place')
+    my_cursor.executemany(airports_form, df.values.tolist())
+    my_db.commit()

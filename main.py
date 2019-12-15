@@ -7,11 +7,12 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import DB
 from geopy.geocoders import Nominatim
-
+from log import Logger
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
 con = DB.my_db
+logg = Logger()
 
 
 def update_db(user_city):
@@ -34,7 +35,7 @@ def update_db(user_city):
     df['price'].apply(lambda x: int(x))
 
     DB.update_city(user_city, df)
-
+    logg.info('YEY')
     driver.close()
     driver.quit()
 
@@ -135,8 +136,6 @@ def get_results(args, df):
         if args.argba2:
             df = df[df['bathroom'] < args.argba2]
         df = df[df['bathroom'] > args.argba1]
-
-    if args.curr:
 
     return df
 
