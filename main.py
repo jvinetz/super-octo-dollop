@@ -6,6 +6,7 @@ from selenium.webdriver import Chrome
 import pandas as pd
 from bs4 import BeautifulSoup
 import DB
+from geopy.geocoders import Nominatim
 
 
 URL = "https://www.waytostay.com/"
@@ -134,6 +135,9 @@ def get_results(args, df):
         if args.argba2:
             df = df[df['bathroom'] < args.argba2]
         df = df[df['bathroom'] > args.argba1]
+
+    if args.curr:
+
     return df
 
 
@@ -157,13 +161,23 @@ def parser():
     parser.add_argument('-ba', action="store_true", help='bathrooms')
     parser.add_argument('--argba1', nargs='?', default=0, type=int, help='lower limit')
     parser.add_argument('--argba2', nargs='?', type=int, help='higher limit')
+    parser.add_argument('--curr', action="store_true", help='currency')
     args = parser.parse_args()
     return args
+
+
+def get_coords(city):
+    geolocator = Nominatim(user_agent="ITC_DM")
+    location = geolocator.geocode(city, timeout=5)
+    latitude = location.latitude
+    longitude = location.longitude
+    return latitude, longitude
 
 
 def main():
     args = parser()
     if args.city:
+        coords = get_coords(args.city)
         update_db(args.city)
         df = DB.get_query_df("""SELECT * FROM place""")
         results = get_results(args, df)
