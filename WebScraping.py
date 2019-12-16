@@ -23,7 +23,7 @@ def global_update():
 
     arr = []
     i=0
-    for pl in page_list:
+    for pl in page_list[:2]:
         scrap(pl, arr)
         i += 1
         if i == 1:

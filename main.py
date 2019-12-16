@@ -36,7 +36,7 @@ def update_db(user_city):
 
     print(df)
     DB.update_city(user_city, df)
-    ##logger.info('YEY')
+
     driver.close()
     driver.quit()
 

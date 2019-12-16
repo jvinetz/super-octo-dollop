@@ -78,8 +78,8 @@ class Fly:
 res = json.loads(reponse.text)
 print(res)'''
 
-tmp = Fly()
-print(tmp.find_airport_by_city_name('Paris'))
+#tmp = Fly()
+#print(tmp.find_airport_by_city_name('Paris'))
 # print(tmp.travel_price('CDG', 'TLV', '2020-01-01', True))
 # print(tmp.travel_price('CDG', 'TLV', '2020-01-01', False))
 # for i in tmp.flight_cheapest_date_search('MAD', 'MUC'):

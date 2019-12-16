@@ -29,3 +29,6 @@ class Logger:
     def info(self, message):
         """Wrapped function to log info"""
         self.logger.info(message)
+
+
+##logger.info('YEY')

@@ -1,4 +1,5 @@
 import re
+import time
 
 import mysql.connector
 import pandas as pd
@@ -79,6 +80,7 @@ def first_fill(data: pd.core.frame.DataFrame):
 
 def update_city(city, df_new):
     # Delete apartments that are no longer in the page
+    df_new.drop_duplicates(inplace=True)
     try:
         df_old = get_query_df('SELECT * FROM place WHERE city = "https://www.waytostay.com/' + city + '-apartments/"')
     except mysql.connector.errors.InternalError:
@@ -135,12 +137,14 @@ def update_city(city, df_new):
         upd_apartments = (str(list(df_update['page_link'].values))).strip('[]')
         query_3 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(upd_apartments)
         my_cursor.execute(query_3)
-
         data, data_prep_list, curr_list = prep_data(df_update)
         my_cursor.execute("SELECT MAX(home_id) FROM place")
         max_id = my_cursor.fetchall()
+        time.sleep(2)
         for i in range(max_id[0][0] + 1, max_id[0][0] + 1 + len(data_prep_list)):
-            data_prep_list[i - max_id[0][0] - 1].insert(0, i)
+            data_prep_list[i - max_id[0][0] - 1] = data_prep_list[i - max_id[0][0] - 1].insert(0, i)
+
+        time.sleep(2)
         query_4 = """INSERT INTO place (
                                         home_id,
                                         city ,
@@ -153,6 +157,7 @@ def update_city(city, df_new):
                                         curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
         my_cursor.executemany(query_4, data_prep_list)
     my_db.commit()
+    return
 
 
 def update_global(df_new):
@@ -164,7 +169,6 @@ def update_global(df_new):
     finally:
         for city in df_new['city'].unique():
             city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
-            print(city_name)
             update_city(city_name, df_new[df_new['city'] == city])
         airports(df_new['city'])
 
