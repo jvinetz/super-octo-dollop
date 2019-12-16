@@ -52,7 +52,6 @@ def first_fill(data: pd.core.frame.DataFrame):
 
     data, data_prep_list, curr_list = prep_data(data)
 
-    print(data_prep_list)
     for i in range(len(data_prep_list)):
         data_prep_list[i].insert(0, i)
 
@@ -126,6 +125,8 @@ def update_city(city, df_new):
                                 price ,
                                 curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
     my_cursor.executemany(query_2, data_prep_list)
+    my_db.commit()
+
 
     # Update apartments whose data has been changed
 
@@ -156,8 +157,8 @@ def update_city(city, df_new):
                                         price ,
                                         curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
         my_cursor.executemany(query_4, data_prep_list)
-    my_db.commit()
-    return
+        my_db.commit()
+
 
 
 def update_global(df_new):

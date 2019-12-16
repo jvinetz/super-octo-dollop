@@ -66,22 +66,3 @@ class Fly:
 
         except ResponseError as error:
             print(error)
-
-
-# amadeus_request(amadeus.reference_data.urls.checkin_links.get(airlineCode='BA'))
-# amadeus_request(amadeus.reference_data.locations.airports.get(longitude=2.3488, latitude=48.8534))
-# amadeus_request(amadeus.reference_data.location('LFPG').get())
-
-
-# amadeus_request()
-'''reponse = requests.get('https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude=49.0000&longitude=2.55',amadeus)
-res = json.loads(reponse.text)
-print(res)'''
-
-'''tmp = Fly()
-print(tmp.find_airport_by_city_name('Paris'))
-# print(tmp.travel_price('CDG', 'TLV', '2020-01-01', True))
-# print(tmp.travel_price('CDG', 'TLV', '2020-01-01', False))
-for i in tmp.flight_cheapest_date_search('MAD', 'MUC'):
-    print(i)
-'''

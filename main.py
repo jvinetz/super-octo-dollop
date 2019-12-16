@@ -176,7 +176,6 @@ def get_coords(city):
 def main():
     args = parser()
     if args.city:
-        coords = get_coords(args.city)
         update_db(args.city)
         df = DB.get_query_df("""SELECT * FROM place""")
         results = get_results(args, df)
