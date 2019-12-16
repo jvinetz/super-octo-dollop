@@ -9,7 +9,7 @@ import DB
 from geopy.geocoders import Nominatim
 
 
-URL = "https://www.waytostay.com/"
+URL = "https://www.waytostay.com/en"
 CSV = r'csv/data.csv'
 con = DB.my_db
 
@@ -82,7 +82,7 @@ def find_city(soup, user_city):
         raw_data = str(p)
         page = re.search('href=(.*)/', raw_data).group()
         if page[6:] == '/' + user_city + "-apartments/":
-            web_page = "https://www.waytostay.com" + page[6:]
+            web_page = "https://www.waytostay.com/en" + page[6:]
     return web_page
 
 
@@ -136,7 +136,6 @@ def get_results(args, df):
             df = df[df['bathroom'] < args.argba2]
         df = df[df['bathroom'] > args.argba1]
 
-    if args.curr:
 
     return df
 
