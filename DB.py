@@ -2,7 +2,7 @@ import re
 
 import mysql.connector
 import pandas as pd
-from Fly_API import *
+from API import Fly_API
 
 my_db = mysql.connector.connect(
     host="localhost",
@@ -40,6 +40,11 @@ def create_tables():
                             curency_ID INTEGER(10),
                             FOREIGN KEY (curency_ID) REFERENCES currency (id))''')
 
+    my_cursor.execute('''CREATE TABLE airports (
+                                    city VARCHAR(255) PRIMARY KEY, 
+                                    airport_id VARCHAR(255)
+                                    )''')
+
 
 def first_fill(data: pd.core.frame.DataFrame):
     """fill the data"""
@@ -68,6 +73,8 @@ def first_fill(data: pd.core.frame.DataFrame):
     my_cursor.executemany(place_form, data_prep_list)
 
     my_db.commit()
+
+    insert_airports()
 
 
 def update_city(city, df_new):
@@ -159,7 +166,7 @@ def update_global(df_new):
             city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
             print(city_name)
             update_city(city_name, df_new[df_new['city'] == city])
-        airports()
+        airports(df_new['city'])
 
 
 def get_query_df(query):
@@ -187,13 +194,42 @@ def get_query_df(query):
     return df
 
 
-def airports():
-    my_cursor.execute('''CREATE TABLE airports (
-                                city VARCHAR(255) PRIMARY KEY, 
-                                airport_id VARCHAR(255)
-                                )''')
+def insert_airports():
+    """Inserts data to the airport table"""
 
     airports_form = '''INSERT INTO airports (city ,airport_id ) VALUES (%s, %s)'''
     df = get_query_df('SELECT city FROM place')
+    df.columns = ['city']
+    df['airport'] = ''
+
+    api = Fly_API.Fly
+    for i in range(len(df)):
+        df['airport'].iloc[i] = api.find_airport_by_city_name(df.iloc[i]['city'])
+
     my_cursor.executemany(airports_form, df.values.tolist())
     my_db.commit()
+
+
+def update_airport(result, df_city):
+    """Updates the airports table if already exists"""
+    new_airs = result[result != df_city]
+    new_airs['airport'] = ''
+
+    api = Fly_API.Fly
+    for i in range(len(new_airs)):
+        new_airs['airport'].iloc[i] = api.find_airport_by_city_name(new_airs.iloc[i]['city'])
+
+    airports_form = '''INSERT INTO airports (city ,airport_id ) VALUES (%s, %s)'''
+    my_cursor.executemany(airports_form, new_airs.values.tolist())
+    my_db.commit()
+
+
+def airports(df_city):
+    my_cursor.execute("SELECT * FROM airports")
+    result = my_cursor.fetchall()
+
+    if not result:
+        insert_airports()
+
+    else:
+        update_airport(result, df_city)

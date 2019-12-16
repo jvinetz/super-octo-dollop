@@ -2,10 +2,10 @@ import logging
 
 
 class Logger:
-    def _init_(self):
+    def __init__(self):
         """Initialize logger with file handler and formatter"""
         self.logger = logging.getLogger('HousingLogger')
-        self.fh = logging.FileHandler('l.log')
+        self.fh = logging.FileHandler('logs.log')
         self.set_level()
         self.set_formatter()
         self.add_handler()

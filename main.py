@@ -12,7 +12,7 @@ from log import Logger
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
 con = DB.my_db
-logg = Logger()
+logger = Logger()
 
 
 def update_db(user_city):
@@ -34,8 +34,9 @@ def update_db(user_city):
     df['bathroom'].apply(lambda x: int(x))
     df['price'].apply(lambda x: int(x))
 
+    print(df)
     DB.update_city(user_city, df)
-    logg.info('YEY')
+    ##logger.info('YEY')
     driver.close()
     driver.quit()
 
