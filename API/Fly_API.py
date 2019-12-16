@@ -24,22 +24,29 @@ class Fly:
         res = json.loads(response.text)
         return res['results'][0]['iata']
 
+    def _better_price(self, response):
+        price = 1000_000
+        departure = ''
+        arrival = ''
+        for resp in response.result['data']:
+            if float(resp['offerItems'][0]['price']['total']) < price:
+                price = float(resp['offerItems'][0]['price']['total'])
+            return price
+
     def travel_price(self, from_airport, to_airport, date, cheapest=True):
         """find cheapest price (cheapest=True) or shortest flight (cheapest=False) """
         try:
-            response = self.amadeus.shopping.flight_offers.get(origin=from_airport, destination=to_airport, departureDate=date)
+            response = self.amadeus.shopping.flight_offers.get(origin=from_airport, destination=to_airport,
+                                                               departureDate=date)
         except ResponseError as error:
             print(error)
 
         price = 1000_000
         if cheapest:
-            price = float(response[0]['offerItems'][0]['price']['total'])
-            for i in range(1, len(response)):
-                if float(response[i]['offerItems'][0]['price']['total']) < price:
-                    price = float(response[i]['offerItems'][0]['price']['total'])
+            price = self._better_price(response)
         else:
             min_time = 365 * 24 * 60 * 60
-            for resp in response:
+            for resp in response.result['data']:
                 for segm in resp['offerItems'][0]['services'][0]['segments']:
                     days = float(segm['flightSegment']['duration'].split('DT')[0])
                     hour = float(segm['flightSegment']['duration'].split('DT')[1].split('H')[0])
@@ -53,7 +60,10 @@ class Fly:
 
     def flight_cheapest_date_search(self, origin, destination):
         try:
-            return self.amadeus.shopping.flight_dates.get(origin=origin, destination=destination)
+            response = self.amadeus.shopping.flight_dates.get(origin=origin, destination=destination)
+            return [{'departureDate': i['departureDate'], 'returnDate': i['returnDate'], 'price': i['price']['total']}
+                    for i in response.result['data']]
+
         except ResponseError as error:
             print(error)
 
@@ -69,7 +79,8 @@ res = json.loads(reponse.text)
 print(res)'''
 
 tmp = Fly()
-# print(tmp.find_airport_by_city_name('Paris'))
+print(tmp.find_airport_by_city_name('Paris'))
 # print(tmp.travel_price('CDG', 'TLV', '2020-01-01', True))
 # print(tmp.travel_price('CDG', 'TLV', '2020-01-01', False))
-print(tmp.flight_cheapest_date_search('MAD', 'MUC'))
+for i in tmp.flight_cheapest_date_search('MAD', 'MUC'):
+    print(i)
