@@ -7,12 +7,11 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import DB
 from geopy.geocoders import Nominatim
-from log import Logger
 
-URL = "https://www.waytostay.com/"
+
+URL = "https://www.waytostay.com/en"
 CSV = r'csv/data.csv'
 con = DB.my_db
-logger = Logger()
 
 
 def update_db(user_city):
@@ -34,7 +33,6 @@ def update_db(user_city):
     df['bathroom'].apply(lambda x: int(x))
     df['price'].apply(lambda x: int(x))
 
-    print(df)
     DB.update_city(user_city, df)
 
     driver.close()
@@ -84,7 +82,7 @@ def find_city(soup, user_city):
         raw_data = str(p)
         page = re.search('href=(.*)/', raw_data).group()
         if page[6:] == '/' + user_city + "-apartments/":
-            web_page = "https://www.waytostay.com" + page[6:]
+            web_page = "https://www.waytostay.com/en" + page[6:]
     return web_page
 
 
@@ -137,6 +135,7 @@ def get_results(args, df):
         if args.argba2:
             df = df[df['bathroom'] < args.argba2]
         df = df[df['bathroom'] > args.argba1]
+
 
     return df
 

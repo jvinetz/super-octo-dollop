@@ -2,7 +2,7 @@ import requests
 import json
 
 
-class Currency():
+class Currency:
     def __init__(self, base):
         self.base = base
         self.response = requests.get(f'https://api.exchangeratesapi.io/latest?base={base}')
