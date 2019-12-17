@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/chromedriver" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -314,7 +315,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576599158217</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="AWS chrome">
+      <created>1576600429368</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1576600429368</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -376,7 +384,8 @@
     <MESSAGE value="airports update" />
     <MESSAGE value="submition" />
     <MESSAGE value="AWS mysql" />
-    <option name="LAST_COMMIT_MESSAGE" value="AWS mysql" />
+    <MESSAGE value="AWS chrome" />
+    <option name="LAST_COMMIT_MESSAGE" value="AWS chrome" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

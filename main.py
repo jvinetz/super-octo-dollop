@@ -89,7 +89,7 @@ def find_city(soup, user_city):
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = r"drive/chromedriver"
+    webdriver = r"chromedriver"
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
