@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import DB
 from geopy.geocoders import Nominatim
 from selenium.webdriver.chrome.options import Options
+import os
 
 
 URL = "https://www.waytostay.com/en"
@@ -89,7 +90,8 @@ def find_city(soup, user_city):
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = r"chromedriver"
+    webdriver = r"./chromedriver"
+    #webdriver.Chrome(os.path.join(os.path.dirname(_file_), config.driver), chrome_options=chrome_options)
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
