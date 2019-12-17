@@ -38,8 +38,8 @@ def create_tables():
                             bedrooms INTEGER(10), 
                             bathroom INTEGER(10),
                             price INTEGER(10),
-                            curency_ID INTEGER(10),
-                            FOREIGN KEY (curency_ID) REFERENCES currency (id))''')
+                            currency_ID INTEGER(10),
+                            FOREIGN KEY (currency_ID) REFERENCES currency (id))''')
 
     my_cursor.execute('''CREATE TABLE airports (
                                     city VARCHAR(255) PRIMARY KEY, 
@@ -66,7 +66,7 @@ def first_fill(data: pd.core.frame.DataFrame):
                         bedrooms , 
                         bathroom ,
                         price ,
-                        curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
+                        currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
 
     # execution :
     my_cursor.executemany(currency_form, curr_list)
@@ -123,7 +123,7 @@ def update_city(city, df_new):
                                 bedrooms , 
                                 bathroom ,
                                 price ,
-                                curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
+                                currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
     my_cursor.executemany(query_2, data_prep_list)
     my_db.commit()
 

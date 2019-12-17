@@ -8,6 +8,8 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from DB import *
+from selenium.webdriver.chrome.options import Options
+
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
@@ -88,7 +90,7 @@ def find_num_pages(city_soup):
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = os.path.join(r"drive", "chromedriver")
+    webdriver = r"/chromedriver"
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')

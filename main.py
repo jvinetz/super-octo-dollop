@@ -96,7 +96,8 @@ def set_driver():
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
-    driver = Chrome(webdriver, chrome_options=chrome_options)
+    #driver = Chrome(webdriver, chrome_options=chrome_options)
+    driver = Chrome(os.path.join(os.path.dirname(__file__), webdriver), chrome_options=chrome_options)
     return driver
 
 
