@@ -7,7 +7,7 @@ from API import Fly_API
 
 my_db = mysql.connector.connect(
     host="localhost",
-    user="root",
+    user="ITC",
     passwd='ITCITCITC',
     use_pure=True,
     database='Scraper'
