@@ -13,29 +13,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
-  </component>
-  <component name="Git.Rebase.Settings">
-    <option name="ONTO" value="refs/remotes/origin/mbranch" />
-  </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="mbranch" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1TbhjAGVVTiGKZ0Laq8orf33DvT" />
   <component name="PropertiesComponent">
-    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Try/Try.py" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="last_opened_file_path" value="D:/super-octo-dollop/main.py" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -49,7 +33,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.DB">
     <configuration name="DB" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="super-octo-dollop" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -71,69 +55,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Fly_API" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="super-octo-dollop" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/API" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/API/Fly_API.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="cursor" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="super-octo-dollop" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Anaconda3/envs/env36/Lib/site-packages/mysql/connector" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/Anaconda3/envs/env36/Lib/site-packages/mysql/connector/cursor.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="log" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="super-octo-dollop" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/log.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="super-octo-dollop" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -147,7 +68,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-G" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -155,20 +76,10 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <list>
-      <item itemvalue="Python.main" />
-      <item itemvalue="Python.cursor" />
-      <item itemvalue="Python.log" />
-      <item itemvalue="Python.Fly_API" />
-      <item itemvalue="Python.DB" />
-    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.DB" />
-        <item itemvalue="Python.Fly_API" />
-        <item itemvalue="Python.log" />
-        <item itemvalue="Python.cursor" />
+        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -176,168 +87,13 @@
     <configuration>$USER_HOME$/.subversion</configuration>
   </component>
   <component name="TaskManager">
-    <task id="LOCAL-00001" summary="Command line first try">
-      <created>1574962517436</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1574962517436</updated>
-    </task>
     <task active="true" id="Default" summary="Default task">
       <changelist id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="" />
-      <created>1575278360047</created>
+      <created>1576682088968</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1575278360047</updated>
+      <updated>1576682088968</updated>
     </task>
-    <task id="LOCAL-00002" summary="Command line">
-      <created>1575300369079</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1575300369079</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Interaction between command line and webscraping">
-      <created>1575303725805</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1575303725806</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Docstrings">
-      <created>1575304150729</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1575304150729</updated>
-    </task>
-    <task id="LOCAL-00005" summary="m">
-      <created>1575389329784</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1575389329784</updated>
-    </task>
-    <task id="LOCAL-00006" summary="m">
-      <created>1575393843519</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1575393843519</updated>
-    </task>
-    <task id="LOCAL-00007" summary="update">
-      <created>1575413370313</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1575413370313</updated>
-    </task>
-    <task id="LOCAL-00008" summary="update">
-      <created>1575455855055</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1575455855056</updated>
-    </task>
-    <task id="LOCAL-00009" summary="update city">
-      <created>1575471336858</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1575471336858</updated>
-    </task>
-    <task id="LOCAL-00010" summary="typing.re">
-      <created>1575475475860</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1575475475860</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Second checkpoint">
-      <created>1575481394650</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1575481394650</updated>
-    </task>
-    <task id="LOCAL-00012" summary="main">
-      <created>1575481432436</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1575481432436</updated>
-    </task>
-    <task id="LOCAL-00013" summary="main">
-      <created>1576422290290</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1576422290290</updated>
-    </task>
-    <task id="LOCAL-00014" summary="airports">
-      <created>1576429147575</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1576429147575</updated>
-    </task>
-    <task id="LOCAL-00015" summary="airports update">
-      <created>1576509729955</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1576509729955</updated>
-    </task>
-    <task id="LOCAL-00016" summary="submition">
-      <created>1576532011368</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1576532011368</updated>
-    </task>
-    <task id="LOCAL-00017" summary="submition">
-      <created>1576567295928</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1576567295928</updated>
-    </task>
-    <task id="LOCAL-00018" summary="AWS mysql">
-      <created>1576598990882</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1576598990882</updated>
-    </task>
-    <task id="LOCAL-00019" summary="AWS mysql">
-      <created>1576599158217</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1576599158217</updated>
-    </task>
-    <task id="LOCAL-00020" summary="AWS chrome">
-      <created>1576600429368</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1576600429368</updated>
-    </task>
-    <task id="LOCAL-00021" summary="AWS chromedriver">
-      <created>1576601045248</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1576601045248</updated>
-    </task>
-    <task id="LOCAL-00022" summary="AWS chromedriver">
-      <created>1576601706636</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1576601706636</updated>
-    </task>
-    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -346,72 +102,11 @@
         <entry key="MAIN">
           <value>
             <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="origin/jbranch" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="COLUMN_ORDER" />
             </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="Branch">
-          <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="origin/jbranch" />
-                </option>
-              </RecentGroup>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="origin/mbranch" />
-                </option>
-              </RecentGroup>
-            </list>
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Command line first try" />
-    <MESSAGE value="Command line" />
-    <MESSAGE value="Interaction between command line and webscraping" />
-    <MESSAGE value="Docstrings" />
-    <MESSAGE value="m" />
-    <MESSAGE value="update" />
-    <MESSAGE value="update city" />
-    <MESSAGE value="typing.re" />
-    <MESSAGE value="Second checkpoint" />
-    <MESSAGE value="main" />
-    <MESSAGE value="airports" />
-    <MESSAGE value="airports update" />
-    <MESSAGE value="submition" />
-    <MESSAGE value="AWS mysql" />
-    <MESSAGE value="AWS chrome" />
-    <MESSAGE value="AWS chromedriver" />
-    <option name="LAST_COMMIT_MESSAGE" value="AWS chromedriver" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DB.py</url>
-          <line>147</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

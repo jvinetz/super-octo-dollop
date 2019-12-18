@@ -90,12 +90,8 @@ def find_num_pages(city_soup):
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = r"/chromedriver"
-    chrome_options = Options()
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    driver = Chrome(webdriver, chrome_options=chrome_options)
+    webdriver = r"drive/chromedriver"
+    driver = Chrome(webdriver)
     return driver
 
 

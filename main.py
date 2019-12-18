@@ -90,15 +90,10 @@ def find_city(soup, user_city):
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = r"./chromedriver"
-    #webdriver.Chrome(os.path.join(os.path.dirname(_file_), config.driver), chrome_options=chrome_options)
-    chrome_options = Options()
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    #driver = Chrome(webdriver, chrome_options=chrome_options)
-    driver = Chrome(os.path.join(os.path.dirname(__file__), webdriver), chrome_options=chrome_options)
+    webdriver = r"drive/chromedriver"
+    driver = Chrome(webdriver)
     return driver
+
 
 
 def get_info(url, driver):

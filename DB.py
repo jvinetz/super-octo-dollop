@@ -79,12 +79,9 @@ def first_fill(data: pd.core.frame.DataFrame):
 
 def update_city(city, df_new):
     # Delete apartments that are no longer in the page
-    df_new.drop_duplicates(inplace=True)
-    try:
-        df_old = get_query_df('SELECT * FROM place WHERE city = "https://www.waytostay.com/' + city + '-apartments/"')
-    except mysql.connector.errors.InternalError:
-        df_old = pd.DataFrame()
-        print('Inserting new city')
+    df_new['page_link'].drop_duplicates(inplace=True)
+
+    df_old = get_old_df()
 
     new_apartments = (str(list(df_new['page_link'].values))).strip('[]')
 
@@ -159,6 +156,14 @@ def update_city(city, df_new):
         my_cursor.executemany(query_4, data_prep_list)
         my_db.commit()
 
+
+def get_old_df():
+    try:
+        df_old = get_query_df('SELECT * FROM place WHERE city = "https://www.waytostay.com/' + city + '-apartments/"')
+    except mysql.connector.errors.InternalError:
+        df_old = pd.DataFrame()
+        print('Inserting new city')
+    return df_old
 
 
 def update_global(df_new):
