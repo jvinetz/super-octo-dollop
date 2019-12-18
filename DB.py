@@ -135,6 +135,7 @@ def update_city(city, df_new):
                                 price ,
                                 curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
     my_cursor.executemany(query_2, data_prep_list)
+    my_db.commit()
 
     # Update apartments whose data has been changed
 
@@ -208,7 +209,8 @@ def prep_data(data):
     # other :
     data['curency'] = data['curency'].apply(lambda x: curr[x])
     data['bedrooms'] = data['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
-    data_prep_list = [row for row in data.iterrows()]#data.values.tolist()
+    data_prep_list = data.values.tolist()
+
     return data, data_prep_list, curr_list
 
 

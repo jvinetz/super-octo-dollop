@@ -14,6 +14,15 @@ CSV = r'csv/data.csv'
 con = DB.my_db
 
 
+def df_traitment(df):
+    df['sleeps'].apply(lambda x: int(x))
+    df['area_sqm'].apply(lambda x: int(x))
+    df['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
+    df['bathroom'].apply(lambda x: int(x))
+    df['price'].apply(lambda x: int(x))
+    return df
+
+
 def update_db(user_city):
     """Updates the database with the information the user placed as input"""
     url = URL
@@ -27,11 +36,7 @@ def update_db(user_city):
     num_pages = find_num_pages(city_soup)
 
     df = create_table(num_pages, web_page, driver, city_soup)
-    df['sleeps'].apply(lambda x: int(x))
-    df['area_sqm'].apply(lambda x: int(x))
-    df['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
-    df['bathroom'].apply(lambda x: int(x))
-    df['price'].apply(lambda x: int(x))
+    df = df_traitment(df)
 
     DB.update_city(user_city, df)
 
