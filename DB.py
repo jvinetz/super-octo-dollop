@@ -80,17 +80,30 @@ def first_fill(data: pd.core.frame.DataFrame):
 def update_city(city, df_new):
     # Delete apartments that are no longer in the page
     df_new['page_link'].drop_duplicates(inplace=True)
-
-    df_old = get_old_df()
+    df_old = get_old_df(city)
 
     new_apartments = (str(list(df_new['page_link'].values))).strip('[]')
+    remove_obsolete_apt(df_old, new_apartments)
 
-    if not df_old.empty:
-        query_1 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(new_apartments)
-        my_cursor.execute(query_1)
-
-    # Insert new apartments
     num_col = df_new.columns
+    insert_new_apt(df_new, df_old, num_col)
+    if not df_old.empty:
+        update_old_apt(df_old, df_new, num_col)
+
+
+def get_old_df(city):
+    """Gets old data from DB"""
+    try:
+        df_old = get_query_df('SELECT * FROM place WHERE city = "https://www.waytostay.com/' + city + '-apartments/"')
+    except mysql.connector.errors.InternalError:
+        df_old = pd.DataFrame()
+        print('Inserting new city')
+    df_old['page_link'].drop_duplicates(inplace=True)
+    return df_old
+
+
+def insert_new_apt(df_new, df_old):
+    """Insert new apartments into DB"""
     if not df_old.empty:
         df_insert = df_new.merge(df_old, on='page_link', how='left', indicator=True).query(
             '_merge == "left_only"').drop('_merge', 1)
@@ -112,58 +125,55 @@ def update_city(city, df_new):
         for i in range(len(data_prep_list)):
             data_prep_list[i].insert(0, i)
     query_2 = """INSERT INTO place (
-                                home_id,
-                                city ,
-                                page_link ,
-                                sleeps ,
-                                area_sqm ,
-                                bedrooms , 
-                                bathroom ,
-                                price ,
-                                currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
+                                    home_id,
+                                    city ,
+                                    page_link ,
+                                    sleeps ,
+                                    area_sqm ,
+                                    bedrooms , 
+                                    bathroom ,
+                                    price ,
+                                    currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
     my_cursor.executemany(query_2, data_prep_list)
     my_db.commit()
 
 
-    # Update apartments whose data has been changed
+def update_old_apt(df_new, df_old, num_col):
+    """Update apartments whose data has been changed"""
 
+    df_update = df_new.merge(df_old, on='page_link', how='inner', indicator=True)
+    df_update = df_update[df_update.columns[0:len(df_new.columns)]]
+    df_update.columns = num_col
+
+    upd_apartments = (str(list(df_update['page_link'].values))).strip('[]')
+    query_3 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(upd_apartments)
+    my_cursor.execute(query_3)
+    data, data_prep_list, curr_list = prep_data(df_update)
+    my_cursor.execute("SELECT MAX(home_id) FROM place")
+    max_id = my_cursor.fetchall()
+    time.sleep(2)
+    for i in range(max_id[0][0] + 1, max_id[0][0] + 1 + len(data_prep_list)):
+        data_prep_list[i - max_id[0][0] - 1] = data_prep_list[i - max_id[0][0] - 1].insert(0, i)
+
+    time.sleep(2)
+    query_4 = """INSERT INTO place (
+                                            home_id,
+                                            city ,
+                                            page_link ,
+                                            sleeps ,
+                                            area_sqm ,
+                                            bedrooms , 
+                                            bathroom ,
+                                            price ,
+                                            curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
+    my_cursor.executemany(query_4, data_prep_list)
+    my_db.commit()
+
+
+def remove_obsolete_apt(df_old, new_apartments):
     if not df_old.empty:
-        df_update = df_new.merge(df_old, on='page_link', how='inner', indicator=True)
-        df_update = df_update[df_update.columns[0:len(df_new.columns)]]
-        df_update.columns = num_col
-
-        upd_apartments = (str(list(df_update['page_link'].values))).strip('[]')
-        query_3 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(upd_apartments)
-        my_cursor.execute(query_3)
-        data, data_prep_list, curr_list = prep_data(df_update)
-        my_cursor.execute("SELECT MAX(home_id) FROM place")
-        max_id = my_cursor.fetchall()
-        time.sleep(2)
-        for i in range(max_id[0][0] + 1, max_id[0][0] + 1 + len(data_prep_list)):
-            data_prep_list[i - max_id[0][0] - 1] = data_prep_list[i - max_id[0][0] - 1].insert(0, i)
-
-        time.sleep(2)
-        query_4 = """INSERT INTO place (
-                                        home_id,
-                                        city ,
-                                        page_link ,
-                                        sleeps ,
-                                        area_sqm ,
-                                        bedrooms , 
-                                        bathroom ,
-                                        price ,
-                                        curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
-        my_cursor.executemany(query_4, data_prep_list)
-        my_db.commit()
-
-
-def get_old_df():
-    try:
-        df_old = get_query_df('SELECT * FROM place WHERE city = "https://www.waytostay.com/' + city + '-apartments/"')
-    except mysql.connector.errors.InternalError:
-        df_old = pd.DataFrame()
-        print('Inserting new city')
-    return df_old
+        query_1 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(new_apartments)
+        my_cursor.execute(query_1)
 
 
 def update_global(df_new):
