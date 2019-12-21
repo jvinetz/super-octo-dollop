@@ -10,20 +10,19 @@ from bs4 import BeautifulSoup
 from DB import *
 from selenium.webdriver.chrome.options import Options
 from log import Logger
+from driver_class import Driver
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
 log = Logger()
+driver = Driver()
 
 
 def global_update():
     """Updates the entire database"""
     url = URL
-    driver = set_driver()
-    soup = get_info(url, driver)
+    soup = driver.get_info(url)
     page_list = collect_pages(soup)
-    driver.close()
-
     arr = []
     i = 0
     for pl in page_list[:2]:
@@ -35,14 +34,15 @@ def global_update():
     df = pd.DataFrame(arr)
     df.to_csv(CSV)
 
+    driver.close()
     driver.quit()
+
     return df
 
 
 def scrap(pl, arr):
     """Scraps evert page and returns the information in a list of dictionaries"""
-    driver = set_driver()
-    city_soup = get_info(pl, driver)
+    city_soup = driver.get_info(pl)
     num_pages = find_num_pages(city_soup)
     for i in range(num_pages):
         city_page = city_soup.find_all('div', class_="tile")
@@ -58,7 +58,7 @@ def scrap(pl, arr):
                    'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency_ID': price[0]}
             arr.append(dic)
         if num_pages != 1:
-            city_soup = next_page(driver, i, pl)
+            city_soup = driver.next_page(i, pl)
     driver.close()
     return arr
 
@@ -91,25 +91,3 @@ def find_num_pages(city_soup):
         log.error('"find_num_pages" raised an ValueError on num_pages')
         num_pages = 0
     return num_pages
-
-
-def set_driver():
-    """Set-up the driver"""
-    webdriver = r"drive/chromedriver"
-    driver = Chrome(webdriver)
-    return driver
-
-
-def get_info(url, driver):
-    """Set up Beautiful Soup"""
-    driver.get(url)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    return soup
-
-
-def next_page(driver, i, pl):
-    """Allow to navigate between pages"""
-    url = pl + '#page=' + str(i + 2) + '&perPage=12'
-    city_soup = get_info(url, driver)
-    return city_soup

@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/WebScraping_driver.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/driver_class.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main_driver.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scraper_class.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebScraping.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebScraping.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/csv/data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/data.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,12 +18,20 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1TbhjAGVVTiGKZ0Laq8orf33DvT" />
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="D:/super-octo-dollop/main.py" />
+    <property name="add_unversioned_files" value="$PROJECT_DIR$/logs.log" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Modules/CommandCalculator.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -31,7 +46,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.main_driver">
     <configuration name="DB" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="super-octo-dollop" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -45,7 +60,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DB.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="PARAMETERS" value="-G" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -66,6 +81,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="--city paris -p" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main_driver" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="super-octo-dollop" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main_driver.py" />
       <option name="PARAMETERS" value="--city paris" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -77,9 +113,11 @@
     <list>
       <item itemvalue="Python.DB" />
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.main_driver" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main_driver" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.DB" />
       </list>
@@ -103,7 +141,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576685853653</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Cleaner update function">
+      <created>1576689032047</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1576689032047</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -121,6 +166,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Try" />
-    <option name="LAST_COMMIT_MESSAGE" value="Try" />
+    <MESSAGE value="Cleaner update function" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaner update function" />
   </component>
 </project>

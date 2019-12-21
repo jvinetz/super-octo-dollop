@@ -10,6 +10,8 @@ from selenium.webdriver import Chrome
 import DB
 import WebScraping
 from log import Logger
+from driver_class import Driver
+
 
 URL = "https://www.waytostay.com/en"
 CSV = r'csv/data.csv'
@@ -20,16 +22,14 @@ log = Logger()
 def update_db(user_city):
     """Updates the database with the information the user placed as input"""
     url = URL
-    driver = set_driver()
-    soup = get_info(url, driver)
+    dr = Driver()
+    soup = dr.get_info(url)
     web_page = find_city(soup, user_city)
-    driver.close()
 
-    driver = set_driver()
-    city_soup = get_info(web_page, driver)
+    city_soup = dr.get_info(web_page)
     num_pages = find_num_pages(city_soup)
 
-    df = create_table(num_pages, web_page, driver, city_soup)
+    df = create_table(num_pages, web_page, dr, city_soup)
     df['sleeps'].apply(lambda x: int(x))
     df['area_sqm'].apply(lambda x: int(x))
     df['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
@@ -38,8 +38,8 @@ def update_db(user_city):
 
     DB.update_city(user_city, df)
 
-    driver.close()
-    driver.quit()
+    dr.close()
+    dr.quit()
 
     return df
 
@@ -57,7 +57,7 @@ def create_table(num_pages, web_page, driver, city_soup):
                    'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency_ID': price[0]}
             arr.append(dic)
         if num_pages != 1:
-            city_soup = next_page(driver, i, web_page)
+            city_soup = driver.next_page(i, web_page)
     df = pd.DataFrame(arr)
     return df
 
@@ -90,28 +90,6 @@ def find_city(soup, user_city):
         if page[6:] == '/' + user_city + "-apartments/":
             web_page = "https://www.waytostay.com/en" + page[6:]
     return web_page
-
-
-def set_driver():
-    """Set-up the driver"""
-    webdriver = r"drive/chromedriver"
-    driver = Chrome(webdriver)
-    return driver
-
-
-def get_info(url, driver):
-    """Set up Beautiful Soup"""
-    driver.get(url)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    return soup
-
-
-def next_page(driver, i, pl):
-    """Allow to navigate between pages"""
-    url = pl + '#page=' + str(i + 2) + '&perPage=12'
-    city_soup = get_info(url, driver)
-    return city_soup
 
 
 def get_results(args, df):

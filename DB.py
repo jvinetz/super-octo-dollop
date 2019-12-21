@@ -3,7 +3,7 @@ import time
 
 import mysql.connector
 import pandas as pd
-from API import Fly_API
+from API.Fly_API import Fly
 
 my_db = mysql.connector.connect(
     host="localhost",
@@ -78,8 +78,10 @@ def first_fill(data: pd.core.frame.DataFrame):
 
 
 def update_city(city, df_new):
-    # Delete apartments that are no longer in the page
-    df_new['page_link'].drop_duplicates(inplace=True)
+    """Updates city in DB"""
+
+    df_new = df_new.drop_duplicates(['page_link'])
+
     df_old = get_old_df(city)
 
     new_apartments = (str(list(df_new['page_link'].values))).strip('[]')
@@ -87,8 +89,8 @@ def update_city(city, df_new):
 
     num_col = df_new.columns
     insert_new_apt(df_new, df_old, num_col)
-    if not df_old.empty:
-        update_old_apt(df_old, df_new, num_col)
+    # if not df_old.empty:
+    #     update_old_apt(df_new, df_old, num_col)
 
 
 def get_old_df(city):
@@ -102,7 +104,7 @@ def get_old_df(city):
     return df_old
 
 
-def insert_new_apt(df_new, df_old):
+def insert_new_apt(df_new, df_old, num_col):
     """Insert new apartments into DB"""
     if not df_old.empty:
         df_insert = df_new.merge(df_old, on='page_link', how='left', indicator=True).query(
@@ -156,8 +158,7 @@ def update_old_apt(df_new, df_old, num_col):
         data_prep_list[i - max_id[0][0] - 1] = data_prep_list[i - max_id[0][0] - 1].insert(0, i)
 
     time.sleep(2)
-    query_4 = """INSERT INTO place (
-                                            home_id,
+    query_4 = """INSERT INTO place (        home_id,
                                             city ,
                                             page_link ,
                                             sleeps ,
@@ -165,7 +166,7 @@ def update_old_apt(df_new, df_old, num_col):
                                             bedrooms , 
                                             bathroom ,
                                             price ,
-                                            curency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
+                                            currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
     my_cursor.executemany(query_4, data_prep_list)
     my_db.commit()
 
@@ -186,7 +187,7 @@ def update_global(df_new):
         for city in df_new['city'].unique():
             city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
             update_city(city_name, df_new[df_new['city'] == city])
-        airports(df_new['city'])
+        airports(df_new)
 
 
 def get_query_df(query):
@@ -198,12 +199,12 @@ def prep_data(data):
     # prepare the data:
     data = data.fillna(-1)
     # currency:
-    curr_unique = data['curency'].unique().tolist()
+    curr_unique = data['currency_ID'].unique().tolist()
     curr_list = [[i, curr_unique[i]] for i in range(len(curr_unique))]
     curr = {i[1]: i[0] for i in curr_list}
 
-    # other :
-    data['curency'] = data['curency'].apply(lambda x: curr[x])
+    # other:
+    data['currency_ID'] = data['currency_ID'].apply(lambda x: curr[x])
     data['bedrooms'] = data['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
     data_prep_list = data.values.tolist()
     return data, data_prep_list, curr_list
@@ -222,9 +223,11 @@ def insert_airports():
     df.columns = ['city']
     df['airport'] = ''
 
-    api = Fly_API.Fly
+    api = Fly()
     for i in range(len(df)):
-        df['airport'].iloc[i] = api.find_airport_by_city_name(df.iloc[i]['city'])
+        city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(df.iloc[i]['city'])).group(1)
+        df = df.copy()
+        df.iloc[i]['airport'] = api.find_airport_by_city_name(city=city_name)
 
     my_cursor.executemany(airports_form, df.values.tolist())
     my_db.commit()
@@ -235,9 +238,11 @@ def update_airport(result, df_city):
     new_airs = result[result != df_city]
     new_airs['airport'] = ''
 
-    api = Fly_API.Fly
+    api = Fly()
     for i in range(len(new_airs)):
-        new_airs['airport'].iloc[i] = api.find_airport_by_city_name(new_airs.iloc[i]['city'])
+        city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(new_airs.iloc[i]['city'])).group(1)
+        new_airs = new_airs.copy()
+        new_airs['airport'].iloc[i] = api.find_airport_by_city_name(city=city_name)
 
     airports_form = '''INSERT INTO airports (city ,airport_id ) VALUES (%s, %s)'''
     my_cursor.executemany(airports_form, new_airs.values.tolist())
