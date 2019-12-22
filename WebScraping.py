@@ -8,6 +8,8 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from DB import *
+from selenium.webdriver.chrome.options import Options
+
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
@@ -23,7 +25,7 @@ def global_update():
 
     arr = []
     i=0
-    for pl in page_list:
+    for pl in page_list[:2]:
         scrap(pl, arr)
         i += 1
         if i == 1:
@@ -88,7 +90,7 @@ def find_num_pages(city_soup):
 
 def set_driver():
     """Set-up the driver"""
-    webdriver = os.path.join(r"drive", "chromedriver")
+    webdriver = r"drive/chromedriver"
     driver = Chrome(webdriver)
     return driver
 

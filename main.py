@@ -7,6 +7,8 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import DB
 from geopy.geocoders import Nominatim
+from selenium.webdriver.chrome.options import Options
+import os
 
 
 URL = "https://www.waytostay.com/en"
@@ -56,7 +58,7 @@ def create_table(num_pages, web_page, driver, city_soup):
             page_link = city.a['href']
             detail = city.p.text.split()
             dic = {"city": web_page, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
-                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'curency': price[0]}
+                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency': price[0]}
             arr.append(dic)
         if num_pages != 1:
             city_soup = next_page(driver, i, web_page)
@@ -96,6 +98,7 @@ def set_driver():
     webdriver = r"drive/chromedriver"
     driver = Chrome(webdriver)
     return driver
+
 
 
 def get_info(url, driver):
@@ -181,7 +184,6 @@ def get_coords(city):
 def main():
     args = parser()
     if args.city:
-        coords = get_coords(args.city)
         update_db(args.city)
         df = DB.get_query_df("""SELECT * FROM place""")
         results = get_results(args, df)
