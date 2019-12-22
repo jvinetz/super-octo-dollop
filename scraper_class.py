@@ -5,13 +5,13 @@ from driver_class import Driver
 
 URL = "https://www.waytostay.com/"
 CSV = r'csv/data.csv'
-log = Logger()
 
 
 class Scraper:
     def __init__(self):
         """Initialize scraper"""
         self.driver = Driver()
+        self.log = Logger()
 
     def global_update(self):
         """Updates the entire database"""
@@ -27,21 +27,21 @@ class Scraper:
                 break
         df = pd.DataFrame(arr)
         df.to_csv(CSV)
-        driver.close()
-        driver.quit()
+        self.driver.close()
+        self.driver.quit()
         return df
 
     def scrap(self, pl, arr):
         """Scraps evert page and returns the information in a list of dictionaries"""
-        city_soup = driver.get_info(pl)
-        num_pages = self.find_num_pages(city_soup, log)
+        city_soup = self.driver.get_info(pl)
+        num_pages = self.find_num_pages(city_soup, self.log)
         for i in range(num_pages):
             city_page = city_soup.find_all('div', class_="tile")
             for city in city_page:
                 try:
                     price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
                 except AttributeError:
-                    log.error('"scrap" raised an ValueError on num_pages')
+                    self.log.error('"scrap" raised an ValueError on num_pages')
                     price = '€ 0'
                 page_link = city.a['href']
                 detail = city.p.text.split()
@@ -49,8 +49,8 @@ class Scraper:
                        'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency_ID': price[0]}
                 arr.append(dic)
             if num_pages != 1:
-                city_soup = driver.next_page(i, pl)
-        driver.close()
+                city_soup = self.driver.next_page(i, pl)
+        self.driver.close()
         return arr
 
     @staticmethod
