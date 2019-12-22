@@ -6,14 +6,16 @@ from geopy.geocoders import Nominatim
 
 class Fly:
     def __init__(self):
+        f = open("API/code.txt", "r")
+        code = f.read()
         self.amadeus = Client(
             client_id='JzlFRuOgo0pT42JHNoAVjOs8WKWxYvSq',
-            client_secret='SEWG9UjsCqqxtN5T'
+            client_secret=code
         )
 
     def find_airport_by_city_name(self, city):
         geolocator = Nominatim(user_agent="ITC_DM")
-        location = geolocator.geocode(city, timeout=5)
+        location = geolocator.geocode(city, timeout=2)
         latitude = location.latitude
         longitude = location.longitude
         return self.find_airport_by_coordinates(latitude, longitude)

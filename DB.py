@@ -1,132 +1,244 @@
-import re
+import sys
 import time
+import re
 
 import mysql.connector
 import pandas as pd
 from API.Fly_API import Fly
-
-my_db = mysql.connector.connect(
-    host="localhost",
-    user="ITC",
-    passwd='ITCITCITC',
-    use_pure=True,
-    database='Scraper'
-)
-
-my_cursor = my_db.cursor(buffered=True)
+import personal_debug
 
 
-def create_db():
-    try:
-        my_cursor.execute(" CREATE DATABASE Scraper ")
-    except mysql.connector.errors.DatabaseError:
-        print('database already exist')
+class DB:
+    def __init__(self, host, user, passwd, use_pure, database, buffered):
+        self.my_db = mysql.connector.connect(
+            host=host,
+            user=user,
+            passwd=passwd,
+            use_pure=use_pure,
+            database=database
+        )
 
+        self.my_cursor = self.my_db.cursor(buffered=buffered)
 
-def create_tables():
-    my_cursor.execute('''CREATE TABLE currency (
-                            id INTEGER(10) PRIMARY KEY, 
-                            name VARCHAR(255)
-                            )''')
+    def create_db(self):
+        try:
+            self.my_cursor.execute(" CREATE DATABASE Scraper ")
+        except mysql.connector.errors.DatabaseError:
+            print('database already exist')
 
-    my_cursor.execute('''CREATE TABLE place (
-                            home_id INTEGER(10) PRIMARY KEY, 
-                            city VARCHAR(100),
-                            page_link VARCHAR(1000),
-                            sleeps INTEGER(10),
-                            area_sqm INTEGER(10),
-                            bedrooms INTEGER(10), 
-                            bathroom INTEGER(10),
-                            price INTEGER(10),
-                            currency_ID INTEGER(10),
-                            FOREIGN KEY (currency_ID) REFERENCES currency (id))''')
+    def create_tables(self):
+        try:
+            self.my_cursor.execute('''CREATE TABLE currency (
+                                id INTEGER(10) PRIMARY KEY, 
+                                name VARCHAR(255)
+                                )''')
+        except mysql.connector.errors.DatabaseError:
+            print('currency table already exist')
 
-    my_cursor.execute('''CREATE TABLE airports (
-                                    city VARCHAR(255) PRIMARY KEY, 
-                                    airport_id VARCHAR(255)
-                                    )''')
+        try:
+            self.my_cursor.execute('''CREATE TABLE place (
+                                home_id INTEGER(10) PRIMARY KEY, 
+                                city VARCHAR(100),
+                                page_link VARCHAR(1000),
+                                sleeps INTEGER(10),
+                                area_sqm INTEGER(10),
+                                bedrooms INTEGER(10), 
+                                bathroom INTEGER(10),
+                                price INTEGER(10),
+                                currency_ID INTEGER(10),
+                                FOREIGN KEY (currency_ID) REFERENCES currency (id),
+                                FOREIGN KEY (city) REFERENCES city (city)
+                                )''')
+        except mysql.connector.errors.DatabaseError:
+            print('place table already exist')
 
+        try:
+            self.my_cursor.execute('''CREATE TABLE city (
+                                        city VARCHAR(255) PRIMARY KEY, 
+                                        airport_id VARCHAR(255)
+                                        )''')
+        except mysql.connector.errors.DatabaseError:
+            print('city table already exist')
 
-def first_fill(data: pd.core.frame.DataFrame):
-    """fill the data"""
+    def first_fill(self, data: pd.core.frame.DataFrame):
+        """fill the data"""
+        # set-up data
+        curr_dic = self.prep_data_currency(data)
+        data = self.prep_data(data, curr_dic)
+        city_dic = self.prep_data_city(data)
 
-    data, data_prep_list, curr_list = prep_data(data)
+        # set-up lists:
+        data_prep_list = data.values.tolist()
+        curr_list = [[curr_dic[i], i] for i in curr_dic.keys()]
+        city_list = [[i, city_dic[i]] for i in city_dic.keys()]
 
-    for i in range(len(data_prep_list)):
-        data_prep_list[i].insert(0, i)
-
-    # SQL request :
-    currency_form = '''INSERT INTO currency (id ,name ) VALUES (%s, %s)'''
-    place_form = '''INSERT INTO place (
-                        home_id,
-                        city ,
-                        page_link ,
-                        sleeps ,
-                        area_sqm ,
-                        bedrooms , 
-                        bathroom ,
-                        price ,
-                        currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
-
-    # execution :
-    my_cursor.executemany(currency_form, curr_list)
-    my_cursor.executemany(place_form, data_prep_list)
-
-    my_db.commit()
-
-    insert_airports()
-
-
-def update_city(city, df_new):
-    """Updates city in DB"""
-
-    df_new = df_new.drop_duplicates(['page_link'])
-
-    df_old = get_old_df(city)
-
-    new_apartments = (str(list(df_new['page_link'].values))).strip('[]')
-    remove_obsolete_apt(df_old, new_apartments)
-
-    num_col = df_new.columns
-    insert_new_apt(df_new, df_old, num_col)
-    # if not df_old.empty:
-    #     update_old_apt(df_new, df_old, num_col)
-
-
-def get_old_df(city):
-    """Gets old data from DB"""
-    try:
-        df_old = get_query_df('SELECT * FROM place WHERE city = "https://www.waytostay.com/' + city + '-apartments/"')
-    except mysql.connector.errors.InternalError:
-        df_old = pd.DataFrame()
-        print('Inserting new city')
-    df_old['page_link'].drop_duplicates(inplace=True)
-    return df_old
-
-
-def insert_new_apt(df_new, df_old, num_col):
-    """Insert new apartments into DB"""
-    if not df_old.empty:
-        df_insert = df_new.merge(df_old, on='page_link', how='left', indicator=True).query(
-            '_merge == "left_only"').drop('_merge', 1)
-        df_insert = df_insert[df_insert.columns[0:len(df_new.columns)]]
-        df_insert.columns = num_col
-    else:
-        df_insert = df_new
-    data, data_prep_list, curr_list = prep_data(df_insert)
-    try:
-        my_cursor.execute("SELECT MAX(home_id) FROM place")
-        max_id = my_cursor.fetchall()
-        for i in range(max_id[0][0] + 1, max_id[0][0] + 1 + len(data_prep_list)):
-            data_prep_list[i - max_id[0][0] - 1].insert(0, i)
-    except TypeError:
         for i in range(len(data_prep_list)):
             data_prep_list[i].insert(0, i)
 
-    except mysql.connector.errors.InternalError:
-        for i in range(len(data_prep_list)):
-            data_prep_list[i].insert(0, i)
-    query_2 = """INSERT INTO place (
+        # SQL request :
+        city_form = '''INSERT INTO city (city ,airport_id ) VALUES (%s, %s)'''
+        currency_form = '''INSERT INTO currency (id ,name ) VALUES (%s, %s)'''
+        place_form = '''INSERT INTO place (
+                            home_id,
+                            city ,
+                            page_link ,
+                            sleeps ,
+                            area_sqm ,
+                            bedrooms , 
+                            bathroom ,
+                            price ,
+                            currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
+
+        # execution :
+        self.my_cursor.executemany(currency_form, curr_list)
+        self.my_cursor.executemany(city_form, city_list)
+        self.my_cursor.executemany(place_form, data_prep_list)
+
+        self.my_db.commit()
+
+    def update_city(self, city, df_new):
+        # Extrating data from DB
+        try:
+            city = re.search(r'([a-z]*)-apartments', city).group(1)
+        except:
+            city = city
+
+        # currency
+        curr_list = df_new['currency'].unique()
+        curr_dic = self.currency_verification(curr_list)
+
+        # place and cities
+        data = self.prep_data(df_new, curr_dic)
+        city_dic = self.prep_data_city(data)
+        self.city_verification(city, city_dic)
+
+        place_db = self.get_query_df(f'SELECT * FROM place where city = "{city}"')
+
+        to_delete = place_db[~place_db['page_link'].isin(data['page_link'])]
+        to_update = data[data['page_link'].isin(place_db['page_link'])]
+        to_insert = data[~data['page_link'].isin(place_db['page_link'])]
+
+        self.delete_old_row_in_db(to_delete)
+        self.update_homes_in_db(to_update)
+        self.insert_new_home(to_insert)
+
+    def insert_new_home(self, to_update):
+        # set-up lists:
+        place_max_id = self.get_query_df(f'SELECT max(home_id) as id FROM place ')['id'].max()
+        to_update.insert(0, 'home_id', 0)
+        for ind in to_update.index:
+            place_max_id += 1
+            to_update.loc[ind, 'home_id'] = place_max_id
+        place_form = '''INSERT INTO place (
+                                home_id,
+                                city ,
+                                page_link ,
+                                sleeps ,
+                                area_sqm ,
+                                bedrooms , 
+                                bathroom ,
+                                price ,
+                                currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
+        self.my_cursor.executemany(place_form, to_update.values.tolist())
+        #print("UPDATE : affected rows = {}".format(self.my_cursor.rowcount))
+        self.my_db.commit()
+
+    def update_homes_in_db(self, to_update):
+        sql = '''UPDATE place SET sleeps= %s , area_sqm = %s, bedrooms = %s, 
+                                            bathroom = %s, price = %s,
+                                            currency_ID= %s WHERE page_link = %s'''
+        for ind in to_update.index:
+            val = (str(to_update['sleeps'][ind]), str(to_update['area_sqm'][ind]), str(to_update['bedrooms'][ind]),
+                   str(to_update['bathroom'][ind]), str(to_update['price'][ind]), str(to_update['currency'][ind]),
+                   str(to_update['page_link'][ind]))
+            self.my_cursor.execute(sql, val)
+        self.my_db.commit()
+
+    def delete_old_row_in_db(self, to_delete):
+        for i in to_delete['page_link'].unique():
+            delete_str = f'DELETE FROM place WHERE page_link ="{i}"'
+            self.my_cursor.execute(delete_str)
+        self.my_db.commit()
+
+    def city_verification(self, city, city_dic):
+        city_db = self.get_query_df(f'SELECT * FROM city where city = "{city}"')
+        for i in city_dic.keys():
+            if not i in city_db['city'].unique():
+                city_form = '''INSERT INTO city (city ,airport_id ) VALUES (%s, %s)'''
+                self.my_cursor.execute(city_form, [i, city_dic[i]])
+                self.my_db.commit()
+
+    def currency_verification(self, curr_list):
+        curr_db = self.get_query_df(f'SELECT * FROM currency')
+        curr_max_id = curr_db['id'].max()
+
+        tmp_dic = curr_db.set_index('name').T.to_dict()
+        return_dic = {i: tmp_dic[i]['id'] for i in tmp_dic.keys()}
+        for i in curr_list:
+            if not i in curr_db['name'].unique():
+                currency_form = '''INSERT INTO currency (id ,name ) VALUES (%s, %s)'''
+                curr_max_id += 1
+                self.my_cursor.execute(currency_form, [str(curr_max_id), i])
+                return_dic[i] = curr_max_id
+                self.my_db.commit()
+        return return_dic
+
+    def update_city2(self, city, df_new):
+        '''TO DELETE'''
+        df_new = df_new.drop_duplicates(['page_link'])
+
+        personal_debug.pd_loop(df_new, 'get inside update_city()')
+        # Delete apartments that are no longer in the page
+
+        try:
+            df_old = self.get_query_df(
+                'SELECT * FROM place WHERE city = "https://www.waytostay.com/' + city + '-apartments/"')
+            df_old = df_old.drop_duplicates(['page_link'])
+
+        except mysql.connector.errors.InternalError:
+            df_old = pd.DataFrame()
+            print('Inserting new city')
+
+        new_apartments = (str(list(df_new['page_link'].values))).strip('[]')
+
+        if not df_old.empty:
+            query_1 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(new_apartments)
+            query_1 += 'and city = "https://www.waytostay.com/' + city + '-apartments/"'
+            self.my_cursor.execute(query_1)
+
+        # Insert new apartments
+        num_col = df_new.columns
+        if not df_old.empty:
+            df_insert = df_new.merge(df_old, on='page_link', how='left', indicator=True).query(
+                '_merge == "left_only"').drop('_merge', 1)
+            df_insert = df_insert[df_insert.columns[0:len(df_new.columns)]]
+            df_insert.columns = num_col
+            personal_debug.pd_loop(df_insert, 'ligne 100')
+        else:
+            df_insert = df_new
+        data, data_prep_list, curr_list = self.prep_data(df_insert)
+        personal_debug.pd_loop(data, 'ligne 104')
+        personal_debug.pd_loop(data_prep_list, 'ligne 105')
+        personal_debug.pd_loop(curr_list, 'ligne 106')
+
+        try:
+            self.my_cursor.execute("SELECT MAX(home_id) FROM place")
+            max_id = self.my_cursor.fetchall()
+            for i in range(max_id[0][0] + 1, max_id[0][0] + 1 + len(data_prep_list)):
+                data_prep_list[i - max_id[0][0] - 1].insert(0, i)
+            personal_debug.pd_loop(data_prep_list, 'ligne 113')
+
+        except TypeError:
+            for i in range(len(data_prep_list)):
+                data_prep_list[i].insert(0, i)
+            personal_debug.pd_loop(data_prep_list, 'ligne 118')
+
+        except mysql.connector.errors.InternalError:
+            for i in range(len(data_prep_list)):
+                data_prep_list[i].insert(0, i)
+            personal_debug.pd_loop(data_prep_list, 'ligne 124')
+
+        query_2 = """INSERT INTO place (
                                     home_id,
                                     city ,
                                     page_link ,
@@ -136,29 +248,37 @@ def insert_new_apt(df_new, df_old, num_col):
                                     bathroom ,
                                     price ,
                                     currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
-    my_cursor.executemany(query_2, data_prep_list)
-    my_db.commit()
+        self.my_cursor.executemany(query_2, data_prep_list)
+        self.my_db.commit()
 
+        # Update apartments whose data has been changed
 
-def update_old_apt(df_new, df_old, num_col):
-    """Update apartments whose data has been changed"""
+        if not df_old.empty:
+            personal_debug.pd_loop(df_new, 'ligne 142')
+            personal_debug.pd_loop(df_old, 'ligne 143')
+            df_update = df_new.merge(df_old, on='page_link', how='inner', indicator=True)
+            # df_update = pd.concat()
+            df_update = df_update[df_update.columns[0:len(df_new.columns)]]
+            df_update.columns = num_col
+            personal_debug.pd_loop(df_update, 'ligne 147')
 
-    df_update = df_new.merge(df_old, on='page_link', how='inner', indicator=True)
-    df_update = df_update[df_update.columns[0:len(df_new.columns)]]
-    df_update.columns = num_col
+            upd_apartments = (str(list(df_update['page_link'].values))).strip('[]')
+            query_3 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(upd_apartments)
+            self.my_cursor.execute(query_3)
 
-    upd_apartments = (str(list(df_update['page_link'].values))).strip('[]')
-    query_3 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(upd_apartments)
-    my_cursor.execute(query_3)
-    data, data_prep_list, curr_list = prep_data(df_update)
-    my_cursor.execute("SELECT MAX(home_id) FROM place")
-    max_id = my_cursor.fetchall()
-    time.sleep(2)
-    for i in range(max_id[0][0] + 1, max_id[0][0] + 1 + len(data_prep_list)):
-        data_prep_list[i - max_id[0][0] - 1] = data_prep_list[i - max_id[0][0] - 1].insert(0, i)
+            data, data_prep_list, curr_list = self.prep_data(df_update)
+            personal_debug.pd_loop(data, 'ligne 153')
+            personal_debug.pd_loop(data_prep_list, 'ligne 154')
+            personal_debug.pd_loop(curr_list, 'ligne 155')
 
-    time.sleep(2)
-    query_4 = """INSERT INTO place (        home_id,
+            self.my_cursor.execute("SELECT MAX(home_id) FROM place")
+            max_id = self.my_cursor.fetchall()
+            for i in range(max_id[0][0] + 1, max_id[0][0] + 1 + len(data_prep_list)):
+                data_prep_list[i - max_id[0][0] - 1].insert(0, i)
+            personal_debug.pd_loop(data_prep_list, 'ligne 162')
+
+            query_4 = """INSERT INTO place (
+                                            home_id,
                                             city ,
                                             page_link ,
                                             sleeps ,
@@ -167,94 +287,95 @@ def update_old_apt(df_new, df_old, num_col):
                                             bathroom ,
                                             price ,
                                             currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
-    my_cursor.executemany(query_4, data_prep_list)
-    my_db.commit()
+            self.my_cursor.executemany(query_4, data_prep_list)
+        self.my_db.commit()
 
+    def update_global(self, df_new):
+        try:
+            self.my_cursor.execute("SELECT MAX(home_id) FROM place")
+        except mysql.connector.errors.InternalError:
+            self.create_db()
+            self.create_tables()
+        finally:
+            for city in df_new['city'].unique():
+                city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
+                print(city_name)
+                self.update_city(city_name, df_new[df_new['city'] == city])
 
-def remove_obsolete_apt(df_old, new_apartments):
-    if not df_old.empty:
-        query_1 = "DELETE FROM place WHERE page_link NOT IN ({0})".format(new_apartments)
-        my_cursor.execute(query_1)
+    def get_query_df(self, query):
+        df = pd.read_sql_query(query, self.my_db)
+        return df
 
+    def prep_data2(self, data):
+        '''TO DELETE'''
+        # prepare the data:
+        data = data.drop_duplicates(['page_link'])
+        data = data.fillna(-1)
+        # currency:
+        curr_unique = data['currency'].unique().tolist()
+        curr_list = [[i, curr_unique[i]] for i in range(len(curr_unique))]
+        curr = {i[1]: i[0] for i in curr_list}
 
-def update_global(df_new):
-    try:
-        my_cursor.execute("SELECT MAX(home_id) FROM place")
-    except mysql.connector.errors.InternalError:
-        create_db()
-        create_tables()
-    finally:
-        for city in df_new['city'].unique():
-            city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
-            update_city(city_name, df_new[df_new['city'] == city])
-        airports(df_new)
+        # other :
+        data['currency'] = data['currency'].apply(lambda x: curr[x])
+        data['bedrooms'] = data['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
+        data_prep_list = data.values.tolist()
 
+        return data, data_prep_list, curr_list
 
-def get_query_df(query):
-    df = pd.read_sql_query(query, my_db)
-    return df
+    def prep_data(self, data, curr):
+        # prepare the data:
+        data = data.drop_duplicates(['page_link'])
+        data = data.fillna(-1)
+        data['city'] = data['city'].map(lambda x: re.search(r'([a-z]*)-apartments', x).group(1))
 
+        # other :
+        data['currency'] = data['currency'].apply(lambda x: curr[x])
+        data['bedrooms'] = data['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
 
-def prep_data(data):
-    # prepare the data:
-    data = data.fillna(-1)
-    # currency:
-    curr_unique = data['currency_ID'].unique().tolist()
-    curr_list = [[i, curr_unique[i]] for i in range(len(curr_unique))]
-    curr = {i[1]: i[0] for i in curr_list}
+        # return data, data_prep_list, curr_list
+        return data
 
-    # other:
-    data['currency_ID'] = data['currency_ID'].apply(lambda x: curr[x])
-    data['bedrooms'] = data['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
-    data_prep_list = data.values.tolist()
-    return data, data_prep_list, curr_list
+    def prep_data_currency(self, data):
+        df_curr = data['currency'].unique()
+        curr_unique = df_curr.tolist()
+        curr_list = [[i, curr_unique[i]] for i in range(len(curr_unique))]
+        curr = {i[1]: i[0] for i in curr_list}
+        return curr
 
+    def prep_data_city(self, data):
+        fly = Fly()
 
-def get_query_df(query):
-    df = pd.read_sql(query, my_db)
-    return df
+        # cities:
+        df_city = data['city'].unique()
+        city_dictionary = {}
+        for i in list(data['city'].unique()):
+            try:
+                city_dictionary[i] = fly.find_airport_by_city_name(i)
+            except:
+                city_dictionary[i] = ' '
+                print(i, 'airport not found')
 
-
-def insert_airports():
-    """Inserts data to the airport table"""
-
-    airports_form = '''INSERT INTO airports (city ,airport_id ) VALUES (%s, %s)'''
-    df = get_query_df('SELECT city FROM place')
-    df.columns = ['city']
-    df['airport'] = ''
-
-    api = Fly()
-    for i in range(len(df)):
-        city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(df.iloc[i]['city'])).group(1)
-        df = df.copy()
-        df.iloc[i]['airport'] = api.find_airport_by_city_name(city=city_name)
-
-    my_cursor.executemany(airports_form, df.values.tolist())
-    my_db.commit()
-
-
-def update_airport(result, df_city):
-    """Updates the airports table if already exists"""
-    new_airs = result[result != df_city]
-    new_airs['airport'] = ''
-
-    api = Fly()
-    for i in range(len(new_airs)):
-        city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(new_airs.iloc[i]['city'])).group(1)
-        new_airs = new_airs.copy()
-        new_airs['airport'].iloc[i] = api.find_airport_by_city_name(city=city_name)
-
-    airports_form = '''INSERT INTO airports (city ,airport_id ) VALUES (%s, %s)'''
-    my_cursor.executemany(airports_form, new_airs.values.tolist())
-    my_db.commit()
-
-
-def airports(df_city):
-    my_cursor.execute("SELECT * FROM airports")
-    result = my_cursor.fetchall()
-
-    if not result:
-        insert_airports()
-
-    else:
-        update_airport(result, df_city)
+        '''city_dictionary = {'paris': 'ORY', 'berlin': 'TXL', 'barcelona': 'BCN', 'lisbon': 'LIS', 'florence': 'FLR',
+                           'rome': 'CIA', 'london': 'LCY', 'madrid': 'MAD', 'prague': 'PRG', 'valencia': 'VLC',
+                           'brussels': 'BRU', 'istanbul': 'ISL', 'seville': 'SVQ', 'vienna': 'VIE', 'budapest': 'BUD',
+                           'milan': 'LIN', 'porto': 'OPO', 'warsaw': 'WAW', 'krakow': 'KRK', 'albufeira': 'FAO',
+                           'almancil': 'FAO', 'coast': 'SYY', 'andalusia': 'GRX', 'andorra': 'LEU', 'antibes': 'JCA',
+                           'arachova': 'GPA', 'pera': 'IPH', 'athens': 'AHN', 'avignon': 'AVN', 'benavente': 'VLL',
+                           'bolonia': 'BLQ', 'bordeaux': 'BOD', 'island': 'AEY', 'buarcos': 'VSE', 'caceres': 'BJZ',
+                           'cadiz': 'XRY', 'canneddi': 'OLB', 'cannes': 'JCA', 'carrapateira': 'JDO', 'carvoeiro': 'PRM',
+                           'cascais': 'CAT', 'mediano': 'PMF', 'cordoba': 'SVQ', 'dampezzo': 'BZO', 'blanca': 'FRS',
+                           'brava': 'SFL', 'sol': 'GMP', 'dinard': 'DNR', 'dubai': 'DWC', 'dubrovnik': 'DBV',
+                           'romagna': 'FRL', 'ericeira': 'CAT', 'faro': 'FAE', 'foz': 'LCG', 'fuerteventura': 'FUE',
+                           'gandia': 'VLC', 'genoa': 'GOA', 'gozo': 'GZM', 'canaria': 'ANS', 'hvar': 'BWK', 'istria': 'PUY',
+                           'frontera': 'LOV', 'gulf': 'ECP', 'lagos': 'LOS', 'como': 'LUG', 'garda': 'VRN',
+                           'lanzarote': 'ACE', 'liguria': 'GOA', 'lombardia': 'BGY', 'madeira': 'FNC', 'malaga': 'AGP',
+                           'malta': 'MLA', 'marbella': 'AGP', 'marseille': 'MRS', 'minturno': 'NAP', 'gordo': 'SLM',
+                           'nantes': 'NTE', 'naples': 'NAP', 'nice': 'NCE', 'porches': 'PRM', 'portimao': 'PRM',
+                           'cervo': 'ALL', 'puglia': 'BRI', 'quarteira': 'FAO', 'rennes': 'RNS', 'mouro': 'PRM',
+                           'sebastian': 'FSM', 'sardinia': 'TTB', 'seghe': 'BZO', 'sicily': 'CTA', 'sintra': 'CAT',
+                           'sitges': 'BCN', 'skiathos': 'JSI', 'split': 'SPU', 'tarragona': 'REU', 'tavira': 'FAO',
+                           'tenerife': 'TFS', 'thessaloniki': 'SKG', 'toulouse': 'TLS', 'trieste': 'TRS', 'tuscany': 'FLR',
+                           'umbria': 'PEG', 'daosta': 'TRN', 'veneto': 'TSF', 'venice': 'VCE', 'verona': 'VRN',
+                           'vilamoura': 'FAO', 'zavala': 'SJJ'}'''
+        return city_dictionary

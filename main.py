@@ -1,20 +1,34 @@
+import sys
+import WebScraping
 import argparse
 import re
-import sys
-
+from selenium.webdriver import Chrome
 import pandas as pd
 from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim
-from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.options import Options
+import os
 
-import DB
+from DB import DB
 import WebScraping
 from log import Logger
+from db_con import host, user, passwd, use_pure, database, buffered
+
 
 URL = "https://www.waytostay.com/en"
 CSV = r'csv/data.csv'
+DB = DB(host, user, passwd, use_pure, database, buffered)
 con = DB.my_db
 log = Logger()
+
+
+def df_traitment(df):
+    df['sleeps'].apply(lambda x: int(x))
+    df['area_sqm'].apply(lambda x: int(x))
+    df['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
+    df['bathroom'].apply(lambda x: int(x))
+    df['price'].apply(lambda x: int(x))
+    return df
 
 
 def update_db(user_city):
@@ -30,11 +44,7 @@ def update_db(user_city):
     num_pages = find_num_pages(city_soup)
 
     df = create_table(num_pages, web_page, driver, city_soup)
-    df['sleeps'].apply(lambda x: int(x))
-    df['area_sqm'].apply(lambda x: int(x))
-    df['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
-    df['bathroom'].apply(lambda x: int(x))
-    df['price'].apply(lambda x: int(x))
+    df = df_traitment(df)
 
     DB.update_city(user_city, df)
 
@@ -54,7 +64,7 @@ def create_table(num_pages, web_page, driver, city_soup):
             page_link = city.a['href']
             detail = city.p.text.split()
             dic = {"city": web_page, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
-                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency_ID': price[0]}
+                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency': price[0]}
             arr.append(dic)
         if num_pages != 1:
             city_soup = next_page(driver, i, web_page)
