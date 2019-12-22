@@ -2,7 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/chromedriver" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/super-octo-dollop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/super-octo-dollop.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/API/Fly_API.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/Fly_API.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB1.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebScraping.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebScraping.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/csv/data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/data.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/csv/data1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/data1.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -11,29 +21,23 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
-  </component>
-  <component name="Git.Rebase.Settings">
-    <option name="ONTO" value="refs/remotes/origin/mbranch" />
-  </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="mbranch" />
-      </map>
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="maikel" />
+      </list>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1TbhjAGVVTiGKZ0Laq8orf33DvT" />
   <component name="PropertiesComponent">
-    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Try/Try.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/csv" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/csv" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -47,7 +51,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.scratch_2">
+  <component name="RunManager" selected="Python.DB1">
     <configuration name="DB" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="super-octo-dollop" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -55,9 +59,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="/anaconda3/envs/FirstClasse/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DB.py" />
@@ -69,7 +73,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="WebScraping" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="DB1" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="super-octo-dollop" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -81,7 +85,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/WebScraping.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DB1.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -90,7 +94,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="command_line" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="super-octo-dollop" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -102,50 +106,8 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="C:\Users\jvine\PycharmProjects\super-octo-dollop\main.py" />
-      <option name="PARAMETERS" value="-G" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="scratch_1" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="super-octo-dollop" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_1.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="scratch_2" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="super-octo-dollop" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_2.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="--city paris" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -154,19 +116,15 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.command_line" />
+      <item itemvalue="Python.main" />
       <item itemvalue="Python.DB" />
-      <item itemvalue="Python.WebScraping" />
-      <item itemvalue="Python.scratch_1" />
-      <item itemvalue="Python.scratch_2" />
+      <item itemvalue="Python.DB1" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.scratch_2" />
-        <item itemvalue="Python.scratch_1" />
-        <item itemvalue="Python.command_line" />
+        <item itemvalue="Python.DB1" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.DB" />
-        <item itemvalue="Python.WebScraping" />
       </list>
     </recent_temporary>
   </component>
@@ -174,98 +132,13 @@
     <configuration>$USER_HOME$/.subversion</configuration>
   </component>
   <component name="TaskManager">
-    <task id="LOCAL-00001" summary="Command line first try">
-      <created>1574962517436</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1574962517436</updated>
-    </task>
     <task active="true" id="Default" summary="Default task">
       <changelist id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="" />
-      <created>1575278360047</created>
+      <created>1576682088968</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1575278360047</updated>
+      <updated>1576682088968</updated>
     </task>
-    <task id="LOCAL-00002" summary="Command line">
-      <created>1575300369079</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1575300369079</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Interaction between command line and webscraping">
-      <created>1575303725805</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1575303725806</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Docstrings">
-      <created>1575304150729</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1575304150729</updated>
-    </task>
-    <task id="LOCAL-00005" summary="m">
-      <created>1575389329784</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1575389329784</updated>
-    </task>
-    <task id="LOCAL-00006" summary="m">
-      <created>1575393843519</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1575393843519</updated>
-    </task>
-    <task id="LOCAL-00007" summary="update">
-      <created>1575413370313</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1575413370313</updated>
-    </task>
-    <task id="LOCAL-00008" summary="update">
-      <created>1575455855055</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1575455855056</updated>
-    </task>
-    <task id="LOCAL-00009" summary="update city">
-      <created>1575471336858</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1575471336858</updated>
-    </task>
-    <task id="LOCAL-00010" summary="typing.re">
-      <created>1575475475860</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1575475475860</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Second checkpoint">
-      <created>1575481394650</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1575481394650</updated>
-    </task>
-    <task id="LOCAL-00012" summary="main">
-      <created>1575481432436</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1575481432436</updated>
-    </task>
-    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -274,50 +147,31 @@
         <entry key="MAIN">
           <value>
             <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="origin/mbranch" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="COLUMN_ORDER" />
             </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="Branch">
-          <value>
-            <list>
-              <RecentGroup>
-                <option name="FILTER_VALUES">
-                  <option value="origin/mbranch" />
-                </option>
-              </RecentGroup>
-            </list>
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Command line first try" />
-    <MESSAGE value="Command line" />
-    <MESSAGE value="Interaction between command line and webscraping" />
-    <MESSAGE value="Docstrings" />
-    <MESSAGE value="m" />
-    <MESSAGE value="update" />
-    <MESSAGE value="update city" />
-    <MESSAGE value="typing.re" />
-    <MESSAGE value="Second checkpoint" />
-    <MESSAGE value="main" />
-    <option name="LAST_COMMIT_MESSAGE" value="main" />
+    <MESSAGE value="Merge branches 'master' and 'mbranch' of https://github.com/jvinetz/super-octo-dollop into mbranch&#10;&#10; Conflicts:&#10;&#9;DB.py&#10;Code corrected on DB" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branches 'master' and 'mbranch' of https://github.com/jvinetz/super-octo-dollop into mbranch&#10;&#10; Conflicts:&#10;&#9;DB.py&#10;Code corrected on DB" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DB.py</url>
+          <line>346</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DB.py</url>
+          <line>185</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
