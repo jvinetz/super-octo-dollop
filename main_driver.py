@@ -3,14 +3,12 @@ import re
 import sys
 
 import pandas as pd
-from bs4 import BeautifulSoup
 from geopy.geocoders import Nominatim
-from selenium.webdriver import Chrome
 
 import DB
-import WebScraping
 from log import Logger
 from driver_class import Driver
+from scraper_class import Scraper
 
 
 URL = "https://www.waytostay.com/en"
@@ -22,12 +20,13 @@ log = Logger()
 def update_db(user_city):
     """Updates the database with the information the user placed as input"""
     url = URL
-    dr = Driver()
+    scraper = Scraper()
+    dr = scraper.driver
     soup = dr.get_info(url)
-    web_page = find_city(soup, user_city)
+    web_page = scraper.find_city(soup, user_city)
 
     city_soup = dr.get_info(web_page)
-    num_pages = find_num_pages(city_soup)
+    num_pages = scraper.find_num_pages(city_soup, log)
 
     df = create_table(num_pages, web_page, dr, city_soup)
     df['sleeps'].apply(lambda x: int(x))
@@ -60,36 +59,6 @@ def create_table(num_pages, web_page, driver, city_soup):
             city_soup = driver.next_page(i, web_page)
     df = pd.DataFrame(arr)
     return df
-
-
-def find_num_pages(city_soup):
-    """Finds out the number of pages tha the city has and returns it"""
-    try:
-        max_pages = city_soup.find('a', class_="last")
-    except AttributeError:
-        log.error('"find_num_pages" raised an AttributeError on max_pages')
-        max_pages = city_soup.find_all('a', class_="page")[-1]
-    try:
-        num_pages = int(max_pages.text) - 1
-    except AttributeError:
-        log.error('"find_num_pages" raised an AttributeError on num_pages')
-        num_pages = 1
-    except ValueError:
-        log.error('"find_num_pages" raised an ValueError on num_pages')
-        num_pages = 0
-    return num_pages
-
-
-def find_city(soup, user_city):
-    """Find the wanted city page"""
-    page = soup.find_all('div', class_="destination-info")
-    web_page = ""
-    for p in page:
-        raw_data = str(p)
-        page = re.search('href=(.*)/', raw_data).group()
-        if page[6:] == '/' + user_city + "-apartments/":
-            web_page = "https://www.waytostay.com/en" + page[6:]
-    return web_page
 
 
 def get_results(args, df):
@@ -148,7 +117,7 @@ def parser():
     parser.add_argument('--argba2', nargs='?', type=int, help='bathrooms higher limit')
     parser.add_argument('--curr', action="store_true", help='currency')
     args = parser.parse_args()
-    return args
+    return args, parser
 
 
 def get_coords(city):
@@ -161,7 +130,7 @@ def get_coords(city):
 
 
 def main():
-    args = parser()
+    args, par = parser()
     if args.city:
         update_db(args.city)
         df = DB.get_query_df("""SELECT * FROM place""")
@@ -169,12 +138,15 @@ def main():
         print("The city has been updated/created in the database")
         print(results)
     elif args.G:
-        df = WebScraping.global_update()
+        df = scraper.global_update()
         DB.update_global(df)
         print(df)
         print("The database has been created/updated")
     else:
-        print("There were not enough parameters to scrap, please be sure to input all the parameters needed")
+        print(
+            "\nThere were not enough parameters to scrap, please be sure to input at least the '-G' or '--city' "
+            "parameters\n")
+        par.print_help()
         sys.exit(1)
 
 

@@ -1,15 +1,40 @@
 import re
-from WebScraping import URL
+import pandas as pd
+from log import Logger
+from driver_class import Driver
+
+URL = "https://www.waytostay.com/"
+CSV = r'csv/data.csv'
+log = Logger()
+
 
 class Scraper:
-    def __init__(self, driver):
+    def __init__(self):
         """Initialize scraper"""
-        self.driver = driver
+        self.driver = Driver()
 
-    def scrap(self, pl, arr, driver):
+    def global_update(self):
+        """Updates the entire database"""
+        url = URL
+        soup = self.driver.get_info(url)
+        page_list = self.collect_pages(soup)
+        arr = []
+        i = 0
+        for pl in page_list[:2]:
+            self.scrap(pl, arr)
+            i += 1
+            if i == 1:
+                break
+        df = pd.DataFrame(arr)
+        df.to_csv(CSV)
+        driver.close()
+        driver.quit()
+        return df
+
+    def scrap(self, pl, arr):
         """Scraps evert page and returns the information in a list of dictionaries"""
         city_soup = driver.get_info(pl)
-        num_pages = self.find_num_pages(city_soup)
+        num_pages = self.find_num_pages(city_soup, log)
         for i in range(num_pages):
             city_page = city_soup.find_all('div', class_="tile")
             for city in city_page:
@@ -28,8 +53,20 @@ class Scraper:
         driver.close()
         return arr
 
+    @staticmethod
+    def find_city(soup, user_city):
+        """Find the wanted city page"""
+        page = soup.find_all('div', class_="destination-info")
+        web_page = ""
+        for p in page:
+            raw_data = str(p)
+            page = re.search('href=(.*)/', raw_data).group()
+            if page[6:] == '/' + user_city + "-apartments/":
+                web_page = "https://www.waytostay.com/en" + page[6:]
+        return web_page
 
-    def collect_pages(self, soup):
+    @staticmethod
+    def collect_pages(soup):
         """Gets the the page of each city and returns all of them in a list"""
         page = soup.find_all('div', class_="destination-info")
         page_list = []
@@ -40,7 +77,8 @@ class Scraper:
             page_list.append(web_page)
         return page_list
 
-    def find_num_pages(self, city_soup, log):
+    @staticmethod
+    def find_num_pages(city_soup, log):
         """Finds out the number of pages tha the city has and returns it"""
         try:
             max_pages = city_soup.find('a', class_="last")

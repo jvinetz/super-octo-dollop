@@ -170,7 +170,7 @@ def parser():
     parser.add_argument('--argba2', nargs='?', type=int, help='bathrooms higher limit')
     parser.add_argument('--curr', action="store_true", help='currency')
     args = parser.parse_args()
-    return args
+    return args, parser
 
 
 def get_coords(city):
@@ -183,7 +183,7 @@ def get_coords(city):
 
 
 def main():
-    args = parser()
+    args, par = parser()
     if args.city:
         update_db(args.city)
         df = DB.get_query_df("""SELECT * FROM place""")
@@ -196,7 +196,10 @@ def main():
         print(df)
         print("The database has been created/updated")
     else:
-        print("There were not enough parameters to scrap, please be sure to input all the parameters needed")
+        print(
+            "\nThere were not enough parameters to scrap, please be sure to input at least the '-G' or '--city' "
+            "parameters\n")
+        par.print_help()
         sys.exit(1)
 
 

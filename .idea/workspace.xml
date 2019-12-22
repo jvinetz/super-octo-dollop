@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/WebScraping_driver.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/driver_class.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main_driver.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scraper_class.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebScraping.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebScraping.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/csv/data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/data.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebScraping_driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebScraping_driver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_driver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper_class.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,7 +27,7 @@
   <component name="ProjectId" id="1TbhjAGVVTiGKZ0Laq8orf33DvT" />
   <component name="PropertiesComponent">
     <property name="add_unversioned_files" value="$PROJECT_DIR$/logs.log" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Modules/CommandCalculator.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -148,7 +144,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576689032047</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Implementation of class driver&#10;Parser with help">
+      <created>1576946165249</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1576946165249</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -167,6 +170,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Try" />
     <MESSAGE value="Cleaner update function" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cleaner update function" />
+    <MESSAGE value="Implementation of class driver&#10;Parser with help" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementation of class driver&#10;Parser with help" />
   </component>
 </project>
