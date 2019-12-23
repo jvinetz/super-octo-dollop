@@ -118,14 +118,20 @@ class DB:
         to_update = data[data['page_link'].isin(place_db['page_link'])]
         to_insert = data[~data['page_link'].isin(place_db['page_link'])]
 
+
+        to_delete = self.fix_df(to_delete)
         self.delete_old_row_in_db(to_delete)
+        to_update = self.fix_df(to_update)
         self.update_homes_in_db(to_update)
+        to_insert = self.fix_df(to_insert)
         self.insert_new_home(to_insert)
 
     def insert_new_home(self, to_update):
         # set-up lists:
         place_max_id = self.get_query_df(f'SELECT max(home_id) as id FROM place ')['id'].max()
         to_update.insert(0, 'home_id', 0)
+        to_update = self.fix_df(to_update)
+
         for ind in to_update.index:
             place_max_id += 1
             to_update.loc[ind, 'home_id'] = place_max_id
@@ -142,6 +148,15 @@ class DB:
         self.my_cursor.executemany(place_form, to_update.values.tolist())
         #print("UPDATE : affected rows = {}".format(self.my_cursor.rowcount))
         self.my_db.commit()
+
+    def fix_df(self, to_update):
+        fixed_df = to_update.copy()
+        fixed_df[['city', 'page_link', 'currency']] = fixed_df[['city', 'page_link', 'currency']].fillna('unknown',
+                                                                                                         axis=1)
+        fixed_df[['sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'price']] = fixed_df[
+            ['sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'price']].fillna(0, axis=1)
+        fixed_df.replace(to_replace="null", value="0", inplace=True)
+        return fixed_df
 
     def update_homes_in_db(self, to_update):
         sql = '''UPDATE place SET sleeps= %s , area_sqm = %s, bedrooms = %s, 
