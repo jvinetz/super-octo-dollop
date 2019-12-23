@@ -5,14 +5,15 @@ import sys
 import pandas as pd
 from geopy.geocoders import Nominatim
 
-import DB
+from DB import DB
 from log import Logger
 from driver_class import Driver
 from scraper_class import Scraper
-
+from db_con import host, user, passwd, use_pure, database, buffered
 
 URL = "https://www.waytostay.com/en"
 CSV = r'csv/data.csv'
+DB = DB(host, user, passwd, use_pure, database, buffered)
 con = DB.my_db
 log = Logger()
 

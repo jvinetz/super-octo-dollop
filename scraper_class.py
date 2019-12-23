@@ -50,7 +50,6 @@ class Scraper:
                 arr.append(dic)
             if num_pages != 1:
                 city_soup = self.driver.next_page(i, pl)
-        self.driver.close()
         return arr
 
     @staticmethod

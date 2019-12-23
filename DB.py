@@ -45,8 +45,8 @@ class DB:
                                 bedrooms INTEGER(10), 
                                 bathroom INTEGER(10),
                                 price INTEGER(10),
-                                currency_ID INTEGER(10),
-                                FOREIGN KEY (currency_ID) REFERENCES currency (id),
+                                currency INTEGER(10),
+                                FOREIGN KEY (currency) REFERENCES currency (id),
                                 FOREIGN KEY (city) REFERENCES city (city)
                                 )''')
         except mysql.connector.errors.DatabaseError:
@@ -87,7 +87,7 @@ class DB:
                             bedrooms , 
                             bathroom ,
                             price ,
-                            currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
+                            currency ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
 
         # execution :
         self.my_cursor.executemany(currency_form, curr_list)
@@ -138,7 +138,7 @@ class DB:
                                 bedrooms , 
                                 bathroom ,
                                 price ,
-                                currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
+                                currency ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
         self.my_cursor.executemany(place_form, to_update.values.tolist())
         #print("UPDATE : affected rows = {}".format(self.my_cursor.rowcount))
         self.my_db.commit()
@@ -146,7 +146,7 @@ class DB:
     def update_homes_in_db(self, to_update):
         sql = '''UPDATE place SET sleeps= %s , area_sqm = %s, bedrooms = %s, 
                                             bathroom = %s, price = %s,
-                                            currency_ID= %s WHERE page_link = %s'''
+                                            currency= %s WHERE page_link = %s'''
         for ind in to_update.index:
             val = (str(to_update['sleeps'][ind]), str(to_update['area_sqm'][ind]), str(to_update['bedrooms'][ind]),
                    str(to_update['bathroom'][ind]), str(to_update['price'][ind]), str(to_update['currency'][ind]),
@@ -247,7 +247,7 @@ class DB:
                                     bedrooms , 
                                     bathroom ,
                                     price ,
-                                    currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
+                                    currency ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
         self.my_cursor.executemany(query_2, data_prep_list)
         self.my_db.commit()
 
@@ -286,7 +286,7 @@ class DB:
                                             bedrooms , 
                                             bathroom ,
                                             price ,
-                                            currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
+                                            currency ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)"""
             self.my_cursor.executemany(query_4, data_prep_list)
         self.my_db.commit()
 
