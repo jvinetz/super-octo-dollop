@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/chromedriver" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/super-octo-dollop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/super-octo-dollop.iml" afterDir="false" />
+    <list default="true" id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="Merge branches 'master' and 'mbranch' of https://github.com/jvinetz/super-octo-dollop into mbranch&#10;&#10; Conflicts:&#10;&#9;DB.py&#10;Code corrected on DB">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/API/Fly_API.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/Fly_API.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/API/currency_API.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/currency_API.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DB1.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebScraping.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebScraping.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/csv/data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/data.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/csv/data1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/data1.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -94,6 +87,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="currency_API" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="super-octo-dollop" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/API" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/API/currency_API.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="super-octo-dollop" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -119,10 +133,12 @@
       <item itemvalue="Python.main" />
       <item itemvalue="Python.DB" />
       <item itemvalue="Python.DB1" />
+      <item itemvalue="Python.currency_API" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.DB1" />
+        <item itemvalue="Python.currency_API" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.DB" />
       </list>
@@ -163,12 +179,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DB.py</url>
-          <line>346</line>
+          <line>415</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DB.py</url>
-          <line>185</line>
+          <line>254</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>

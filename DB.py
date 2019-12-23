@@ -6,10 +6,16 @@ import mysql.connector
 import pandas as pd
 from API.Fly_API import Fly
 import personal_debug
+from API.currency_API import Currency
+from datetime import datetime
+
+DIC_CUR = {'€': 'EUR', '£': 'GBP', '$': 'USD'}
+BASE_CURR_FLY = 'USD'
 
 
 class DB:
     def __init__(self, host, user, passwd, use_pure, database, buffered):
+        self.fly = Fly()
         self.my_db = mysql.connector.connect(
             host=host,
             user=user,
@@ -59,6 +65,69 @@ class DB:
                                         )''')
         except mysql.connector.errors.DatabaseError:
             print('city table already exist')
+
+        try:
+            self.my_cursor.execute('''CREATE TABLE trip (
+                                        id int PRIMARY KEY auto_increment,
+                                        city VARCHAR(255), 
+                                        house_price INTEGER(10),
+                                        flight_price INTEGER(10),
+                                        total_price INTEGER(10),
+                                        FOREIGN KEY (city) REFERENCES city (city)
+                                        )''')
+        except mysql.connector.errors.DatabaseError:
+            print('trip table already exist')
+
+    def fill_cheapest_trip(self, from_airport, date_departure, date_return, peoples, sleeps, currency, cheap=True):
+        curr_converter = Currency(currency)
+        # Verification
+        days, from_today = self.date_traitement(date_departure, date_return)
+        if from_today < 0 or days < 1 or peoples < 1 or not (currency in curr_converter.get_list_currencies()):
+            return ''
+
+        self.my_cursor.execute('TRUNCATE TABLE trip')
+        self.my_cursor.execute('SELECT city, airport_id FROM city')
+        result = self.my_cursor.fetchall()
+        for city, airport in result:
+            if airport == from_airport:
+                fly_cost_r_usd = fly_cost_a_usd = 0.0
+            else:
+                fly_cost_a_usd = self.fly.travel_price(from_airport, airport, date_departure, cheapest=cheap)
+                fly_cost_r_usd = self.fly.travel_price(airport, from_airport, date_return, cheapest=cheap)
+
+            if isinstance(fly_cost_a_usd, float) and isinstance(fly_cost_r_usd, float):
+                total_fly_cost = (fly_cost_a_usd + fly_cost_r_usd) * peoples / curr_converter.get_rate(BASE_CURR_FLY)
+                self.my_cursor.execute(f'''SELECT min(p.price), c.name 
+                                            FROM place as p
+                                            JOIN currency as c on c.id = p.currency_ID
+                                            WHERE sleeps >= {sleeps} and city = "{city}"
+                                            Group By c.name
+                                            ''')
+                result2 = self.my_cursor.fetchall()
+                if len(result2) != 0:
+                    try:
+                        rate = curr_converter.get_rate(result2[0][1])
+                    except:
+                        rate = curr_converter.get_rate(DIC_CUR[result2[0][1]])
+
+                    trip_form = '''INSERT INTO trip (city,house_price,flight_price,total_price ) 
+                                    VALUES (%s, %s, %s, %s)'''
+
+                    self.my_cursor.execute(trip_form, [city, days * result2[0][0] / rate, total_fly_cost,
+                                                       total_fly_cost + days * result2[0][0] / rate])
+                    self.my_db.commit()
+        self.my_db.commit()
+        return self.get_query_df('select * from trip Order by total_price desc')
+
+    def date_traitement(self, date_departure, date_return):
+        date_format = "%Y-%m-%d"
+        today = datetime.today()
+        d_departure = datetime.strptime(date_departure, date_format)
+        d_return = datetime.strptime(date_return, date_format)
+        delta = d_return - d_departure
+        days = delta.days
+        from_today = (d_departure - today).days
+        return days, from_today
 
     def first_fill(self, data: pd.core.frame.DataFrame):
         """fill the data"""
@@ -140,7 +209,7 @@ class DB:
                                 price ,
                                 currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
         self.my_cursor.executemany(place_form, to_update.values.tolist())
-        #print("UPDATE : affected rows = {}".format(self.my_cursor.rowcount))
+        # print("UPDATE : affected rows = {}".format(self.my_cursor.rowcount))
         self.my_db.commit()
 
     def update_homes_in_db(self, to_update):

@@ -4,6 +4,13 @@ from amadeus import Client, ResponseError, Location
 from geopy.geocoders import Nominatim
 
 
+def find_airport_by_coordinates(lat, lon):
+    request_string = f'https://ourairportapi.com/nearest/{lat},{lon}?expand=true&iataOnly=true&max=1'
+    response = requests.get(request_string)
+    res = json.loads(response.text)
+    return res['results'][0]['iata']
+
+
 class Fly:
     def __init__(self):
         f = open("API/code.txt", "r")
@@ -18,13 +25,7 @@ class Fly:
         location = geolocator.geocode(city, timeout=2)
         latitude = location.latitude
         longitude = location.longitude
-        return self.find_airport_by_coordinates(latitude, longitude)
-
-    def find_airport_by_coordinates(self, lat, lon):
-        request_string = f'https://ourairportapi.com/nearest/{lat},{lon}?expand=true&iataOnly=true&max=1'
-        response = requests.get(request_string)
-        res = json.loads(response.text)
-        return res['results'][0]['iata']
+        return find_airport_by_coordinates(latitude, longitude)
 
     def _better_price(self, response):
         price = 1000_000
@@ -42,6 +43,7 @@ class Fly:
                                                                departureDate=date)
         except ResponseError as error:
             print(error)
+            return ''
 
         price = 1000_000
         if cheapest:

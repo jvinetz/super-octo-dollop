@@ -11,8 +11,12 @@ class Currency:
     def get_rate(self, second_currency):
         return self.res['rates'][second_currency]
 
+    def get_list_currencies(self):
+        if 'error' in self.res:
+            return []
+        return list(self.res['rates'].keys())
 
-tmp = Currency('ILS')
 
-print(1 / tmp.get_rate('EUR'))
+'''tmp = Currency('ILSs')
+print(tmp.get_list_currencies())'''
 
