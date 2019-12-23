@@ -99,7 +99,7 @@ class DB:
     def update_city(self, city, df_new):
         # Extrating data from DB
         try:
-            city = re.search(r'([a-z]*)-apartments', city).group(1)
+            city = re.search(r'([a-z-]*)-apartments', city).group(1)
         except:
             city = city
 
@@ -313,7 +313,7 @@ class DB:
             self.create_tables()
         finally:
             for city in df_new['city'].unique():
-                city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
+                city_name = re.search(r'https://www.waytostay.com/([a-z-]*)-apartments/', str(city)).group(1)
                 print(city_name)
                 self.update_city(city_name, df_new[df_new['city'] == city])
 
@@ -342,7 +342,7 @@ class DB:
         # prepare the data:
         data = data.drop_duplicates(['page_link'])
         data = data.fillna(-1)
-        data['city'] = data['city'].map(lambda x: re.search(r'([a-z]*)-apartments', x).group(1))
+        data['city'] = data['city'].map(lambda x: re.search(r'([a-z-]*)-apartments', x).group(1))
 
         # other :
         data['currency'] = data['currency'].apply(lambda x: curr[x])

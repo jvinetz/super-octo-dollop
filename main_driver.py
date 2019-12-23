@@ -139,9 +139,16 @@ def main():
         print("The city has been updated/created in the database")
         print(results)
     elif args.G:
-        scraper = Scraper()
-        df = scraper.global_update()
-        DB.update_global(df)
+        df_try = DB.get_query_df("""SELECT * FROM place""")
+        results = get_results(args, df_try)
+        if results:
+            scraper = Scraper()
+            df = scraper.global_update()
+            DB.update_global(df)
+        else:
+            scraper = Scraper()
+            df = scraper.global_update()
+            DB.first_fill(df)
         print(df)
         print("The database has been created/updated")
     else:
