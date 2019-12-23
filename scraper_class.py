@@ -19,12 +19,8 @@ class Scraper:
         soup = self.driver.get_info(url)
         page_list = self.collect_pages(soup)
         arr = []
-        i = 0
-        for pl in page_list[:2]:
+        for pl in page_list:
             self.scrap(pl, arr)
-            i += 1
-            if i == 1:
-                break
         df = pd.DataFrame(arr)
         df.to_csv(CSV)
         self.driver.close()
@@ -45,12 +41,13 @@ class Scraper:
                     price = '€ 0'
                 page_link = city.a['href']
                 detail = city.p.text.split()
+                if detail[1] == 'sqm':
+                    detail = [detail[0]] + ['0', '0'] + detail[1:]
                 dic = {"city": pl, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
-                       'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency_ID': price[0]}
+                       'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency': price[0]}
                 arr.append(dic)
             if num_pages != 1:
                 city_soup = self.driver.next_page(i, pl)
-        self.driver.close()
         return arr
 
     @staticmethod
@@ -83,14 +80,11 @@ class Scraper:
         try:
             max_pages = city_soup.find('a', class_="last")
         except AttributeError:
-            log.error('"find_num_pages" raised an AttributeError on max_pages')
             max_pages = city_soup.find_all('a', class_="page")[-1]
         try:
             num_pages = int(max_pages.text) - 1
         except AttributeError:
-            log.error('"find_num_pages" raised an AttributeError on num_pages')
             num_pages = 1
         except ValueError:
-            log.error('"find_num_pages" raised an ValueError on num_pages')
             num_pages = 0
         return num_pages

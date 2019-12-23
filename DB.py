@@ -1,11 +1,11 @@
-import sys
-import time
 import re
 
 import mysql.connector
 import pandas as pd
-from API.Fly_API import Fly
+
 import personal_debug
+from API.Fly_API import Fly
+from log import Logger
 
 
 class DB:
@@ -19,12 +19,14 @@ class DB:
         )
 
         self.my_cursor = self.my_db.cursor(buffered=buffered)
+        self.log = Logger()
 
     def create_db(self):
         try:
             self.my_cursor.execute(" CREATE DATABASE Scraper ")
         except mysql.connector.errors.DatabaseError:
             print('database already exist')
+            self.log.error('database already exist')
 
     def create_tables(self):
         try:
@@ -34,6 +36,7 @@ class DB:
                                 )''')
         except mysql.connector.errors.DatabaseError:
             print('currency table already exist')
+            self.log.error('currency table already exist')
 
         try:
             self.my_cursor.execute('''CREATE TABLE place (
@@ -51,6 +54,7 @@ class DB:
                                 )''')
         except mysql.connector.errors.DatabaseError:
             print('place table already exist')
+            self.log.error('place table already exist')
 
         try:
             self.my_cursor.execute('''CREATE TABLE city (
@@ -59,6 +63,7 @@ class DB:
                                         )''')
         except mysql.connector.errors.DatabaseError:
             print('city table already exist')
+            self.log.error('city table already exist')
 
     def first_fill(self, data: pd.core.frame.DataFrame):
         """fill the data"""
@@ -99,8 +104,9 @@ class DB:
     def update_city(self, city, df_new):
         # Extrating data from DB
         try:
-            city = re.search(r'([a-z]*)-apartments', city).group(1)
+            city = re.search(r'([a-z-]*)-apartments', city).group(1)
         except:
+            self.log.error('find city with regular expression failed')
             city = city
 
         # currency
@@ -118,14 +124,19 @@ class DB:
         to_update = data[data['page_link'].isin(place_db['page_link'])]
         to_insert = data[~data['page_link'].isin(place_db['page_link'])]
 
+        to_delete = self.fix_df(to_delete)
         self.delete_old_row_in_db(to_delete)
+        to_update = self.fix_df(to_update)
         self.update_homes_in_db(to_update)
+        to_insert = self.fix_df(to_insert)
         self.insert_new_home(to_insert)
 
     def insert_new_home(self, to_update):
         # set-up lists:
         place_max_id = self.get_query_df(f'SELECT max(home_id) as id FROM place ')['id'].max()
         to_update.insert(0, 'home_id', 0)
+        to_update = self.fix_df(to_update)
+
         for ind in to_update.index:
             place_max_id += 1
             to_update.loc[ind, 'home_id'] = place_max_id
@@ -138,15 +149,24 @@ class DB:
                                 bedrooms , 
                                 bathroom ,
                                 price ,
-                                currency_ID ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
+                                currency ) VALUES (%s, %s,%s,%s,%s, %s, %s, %s, %s)'''
         self.my_cursor.executemany(place_form, to_update.values.tolist())
-        #print("UPDATE : affected rows = {}".format(self.my_cursor.rowcount))
+        # print("UPDATE : affected rows = {}".format(self.my_cursor.rowcount))
         self.my_db.commit()
+
+    def fix_df(self, to_update):
+        fixed_df = to_update.copy()
+        fixed_df[['city', 'page_link', 'currency']] = fixed_df[['city', 'page_link', 'currency']].fillna('unknown',
+                                                                                                         axis=1)
+        fixed_df[['sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'price']] = fixed_df[
+            ['sleeps', 'area_sqm', 'bedrooms', 'bathroom', 'price']].fillna(0, axis=1)
+        fixed_df.replace(to_replace ="null", value ="0", inplace=True)
+        return fixed_df
 
     def update_homes_in_db(self, to_update):
         sql = '''UPDATE place SET sleeps= %s , area_sqm = %s, bedrooms = %s, 
                                             bathroom = %s, price = %s,
-                                            currency_ID= %s WHERE page_link = %s'''
+                                            currency= %s WHERE page_link = %s'''
         for ind in to_update.index:
             val = (str(to_update['sleeps'][ind]), str(to_update['area_sqm'][ind]), str(to_update['bedrooms'][ind]),
                    str(to_update['bathroom'][ind]), str(to_update['price'][ind]), str(to_update['currency'][ind]),
@@ -196,6 +216,7 @@ class DB:
             df_old = df_old.drop_duplicates(['page_link'])
 
         except mysql.connector.errors.InternalError:
+            self.log.error('Inserting new city')
             df_old = pd.DataFrame()
             print('Inserting new city')
 
@@ -229,11 +250,13 @@ class DB:
             personal_debug.pd_loop(data_prep_list, 'ligne 113')
 
         except TypeError:
+            self.log.error('type error on finding the max home_id')
             for i in range(len(data_prep_list)):
                 data_prep_list[i].insert(0, i)
             personal_debug.pd_loop(data_prep_list, 'ligne 118')
 
         except mysql.connector.errors.InternalError:
+            self.log.error('sql error on finding the max home_id')
             for i in range(len(data_prep_list)):
                 data_prep_list[i].insert(0, i)
             personal_debug.pd_loop(data_prep_list, 'ligne 124')
@@ -294,13 +317,18 @@ class DB:
         try:
             self.my_cursor.execute("SELECT MAX(home_id) FROM place")
         except mysql.connector.errors.InternalError:
+            self.log.error('DB does not exist')
             self.create_db()
+            self.log.info('DB created')
             self.create_tables()
+            self.log.info('tables created')
         finally:
             for city in df_new['city'].unique():
-                city_name = re.search(r'https://www.waytostay.com/([a-z]*)-apartments/', str(city)).group(1)
+                print(city)
+                city_name = re.search(r'https://www.waytostay.com/([a-z-]*)-apartments/', str(city)).group(1)
                 print(city_name)
                 self.update_city(city_name, df_new[df_new['city'] == city])
+                self.log.info('City ' + city_name + ' has been updated in the database')
 
     def get_query_df(self, query):
         df = pd.read_sql_query(query, self.my_db)
@@ -327,7 +355,7 @@ class DB:
         # prepare the data:
         data = data.drop_duplicates(['page_link'])
         data = data.fillna(-1)
-        data['city'] = data['city'].map(lambda x: re.search(r'([a-z]*)-apartments', x).group(1))
+        data['city'] = data['city'].map(lambda x: re.search(r'([a-z-]*)-apartments', x).group(1))
 
         # other :
         data['currency'] = data['currency'].apply(lambda x: curr[x])
@@ -355,6 +383,7 @@ class DB:
             except:
                 city_dictionary[i] = ' '
                 print(i, 'airport not found')
+                self.log.error('airport not found')
 
         '''city_dictionary = {'paris': 'ORY', 'berlin': 'TXL', 'barcelona': 'BCN', 'lisbon': 'LIS', 'florence': 'FLR',
                            'rome': 'CIA', 'london': 'LCY', 'madrid': 'MAD', 'prague': 'PRG', 'valencia': 'VLC',

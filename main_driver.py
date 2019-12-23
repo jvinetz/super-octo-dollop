@@ -5,16 +5,19 @@ import sys
 import pandas as pd
 from geopy.geocoders import Nominatim
 
-import DB
+from DB import DB
 from log import Logger
 from driver_class import Driver
 from scraper_class import Scraper
+from db_con import host, user, passwd, use_pure, database, buffered
 
 
 URL = "https://www.waytostay.com/en"
 CSV = r'csv/data.csv'
+DB = DB(host, user, passwd, use_pure, database, buffered)
 con = DB.my_db
 log = Logger()
+scraper = Scraper()
 
 
 def update_db(user_city):
@@ -52,8 +55,10 @@ def create_table(num_pages, web_page, driver, city_soup):
             price = re.search(r'(>)([€£]\w*\s[0-9]*)<', str(city)).group(2)
             page_link = city.a['href']
             detail = city.p.text.split()
+            if detail[1] == 'sqm':
+                detail = [detail[0]] + ['0', '0'] + detail[1:]
             dic = {"city": web_page, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
-                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency_ID': price[0]}
+                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency': price[0]}
             arr.append(dic)
         if num_pages != 1:
             city_soup = driver.next_page(i, web_page)
