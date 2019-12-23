@@ -140,8 +140,7 @@ def main():
         print(results)
     elif args.G:
         df_try = DB.get_query_df("""SELECT * FROM place""")
-        results = get_results(args, df_try)
-        if results:
+        if df_try:
             scraper = Scraper()
             df = scraper.global_update()
             DB.update_global(df)
