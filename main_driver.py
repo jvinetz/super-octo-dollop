@@ -140,14 +140,15 @@ def main():
         print(results)
     elif args.G:
         df_try = DB.get_query_df("""SELECT * FROM place""")
-        if df_try:
-            scraper = Scraper()
-            df = scraper.global_update()
-            DB.update_global(df)
-        else:
+        if df_try.empty:
             scraper = Scraper()
             df = scraper.global_update()
             DB.first_fill(df)
+        else:
+            scraper = Scraper()
+            df = scraper.global_update()
+            DB.update_global(df)
+
         print(df)
         print("The database has been created/updated")
     else:
