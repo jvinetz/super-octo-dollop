@@ -117,7 +117,7 @@ class DB:
                                                        total_fly_cost + days * result2[0][0] / rate])
                     self.my_db.commit()
         self.my_db.commit()
-        return self.get_query_df('select * from trip Order by total_price desc')
+        return self.get_query_df('select * from trip Order by total_price asc')
 
     def date_traitement(self, date_departure, date_return):
         date_format = "%Y-%m-%d"
