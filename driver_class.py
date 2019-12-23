@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
+import time
 
 URL = "https://www.waytostay.com/en"
 

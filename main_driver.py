@@ -54,7 +54,7 @@ def create_table(num_pages, web_page, driver, city_soup):
             page_link = city.a['href']
             detail = city.p.text.split()
             dic = {"city": web_page, "page_link": page_link, 'sleeps': detail[1], 'area_sqm': detail[2],
-                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency_ID': price[0]}
+                   'bedrooms': detail[4], 'bathroom': detail[6], 'price': price[2:], 'currency': price[0]}
             arr.append(dic)
         if num_pages != 1:
             city_soup = driver.next_page(i, web_page)

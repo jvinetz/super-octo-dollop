@@ -63,6 +63,7 @@ class DB:
     def first_fill(self, data: pd.core.frame.DataFrame):
         """fill the data"""
         # set-up data
+        data = self.fix_df(data)
         curr_dic = self.prep_data_currency(data)
         data = self.prep_data(data, curr_dic)
         city_dic = self.prep_data_city(data)
@@ -131,6 +132,7 @@ class DB:
         place_max_id = self.get_query_df(f'SELECT max(home_id) as id FROM place ')['id'].max()
         to_update.insert(0, 'home_id', 0)
         to_update = self.fix_df(to_update)
+        print('to_update ', to_update)
 
         for ind in to_update.index:
             place_max_id += 1
@@ -150,6 +152,7 @@ class DB:
         self.my_db.commit()
 
     def fix_df(self, to_update):
+        """The function fills the null values in the dataframe and replaces the values = 'null' for others"""
         fixed_df = to_update.copy()
         fixed_df[['city', 'page_link', 'currency']] = fixed_df[['city', 'page_link', 'currency']].fillna('unknown',
                                                                                                          axis=1)
@@ -162,6 +165,7 @@ class DB:
         sql = '''UPDATE place SET sleeps= %s , area_sqm = %s, bedrooms = %s, 
                                             bathroom = %s, price = %s,
                                             currency= %s WHERE page_link = %s'''
+        to_update = self.fix_df(to_update)
         for ind in to_update.index:
             val = (str(to_update['sleeps'][ind]), str(to_update['area_sqm'][ind]), str(to_update['bedrooms'][ind]),
                    str(to_update['bathroom'][ind]), str(to_update['price'][ind]), str(to_update['currency'][ind]),
@@ -306,6 +310,7 @@ class DB:
         self.my_db.commit()
 
     def update_global(self, df_new):
+        df_new = self.fix_df(df_new)
         try:
             self.my_cursor.execute("SELECT MAX(home_id) FROM place")
         except mysql.connector.errors.InternalError:
@@ -315,7 +320,10 @@ class DB:
             for city in df_new['city'].unique():
                 city_name = re.search(r'https://www.waytostay.com/([a-z-]*)-apartments/', str(city)).group(1)
                 print(city_name)
-                self.update_city(city_name, df_new[df_new['city'] == city])
+                try:
+                    self.update_city(city_name, df_new[df_new['city'] == city])
+                except:
+                    print("Can not update city: ", city_name)
 
     def get_query_df(self, query):
         df = pd.read_sql_query(query, self.my_db)
@@ -340,13 +348,16 @@ class DB:
 
     def prep_data(self, data, curr):
         # prepare the data:
+        data = self.fix_df(data)
         data = data.drop_duplicates(['page_link'])
         data = data.fillna(-1)
         data['city'] = data['city'].map(lambda x: re.search(r'([a-z-]*)-apartments', x).group(1))
 
         # other :
         data['currency'] = data['currency'].apply(lambda x: curr[x])
-        data['bedrooms'] = data['bedrooms'].apply(lambda x: int(x) if x != 'studio' else 0)
+        data['bedrooms'] = data['bedrooms'].apply(lambda x: int(x) if x.isdigit() else 0)
+        data['area_sqm'] = data['area_sqm'].apply(lambda x: int(x) if x.isdigit() else 0)
+        data['bathroom'] = data['bathroom'].apply(lambda x: int(x) if x.isdigit() else 0)
 
         # return data, data_prep_list, curr_list
         return data
