@@ -138,6 +138,7 @@ def main():
         print("The city has been updated/created in the database")
         print(results)
     elif args.G:
+        scraper = Scraper()
         df = scraper.global_update()
         DB.update_global(df)
         print(df)

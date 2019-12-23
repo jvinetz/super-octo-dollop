@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1a1cf183-9991-4eaa-b56a-86aa30b286a1" name="Default Changelist" comment="">
+    <list default="true" id="1a1cf183-9991-4eaa-b56a-86aa30b286a1" name="Default Changelist" comment="Working with DB updated">
+      <change afterPath="$PROJECT_DIR$/Checkpoint_2.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Checkpoint_3.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DB Diagram.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db_con.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/new" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/old" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebScraping.py" beforeDir="false" afterPath="$PROJECT_DIR$/WebScraping.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/driver_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/driver_class.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_driver.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.options import Options
 
 URL = "https://www.waytostay.com/en"
 
@@ -7,8 +8,13 @@ URL = "https://www.waytostay.com/en"
 class Driver:
     def __init__(self):
         """Initialize chrome driver"""
-        self.webdriver = r"drive/chromedriver"
-        self.driver = Chrome(self.webdriver)
+
+        self.webdriver = r"./chromedriver"
+        self.chrome_options = Options()
+        self.chrome_options.add_argument('--headless')
+        self.chrome_options.add_argument('--no-sandbox')
+        self.chrome_options.add_argument('--disable-dev-shm-usage')
+        self.driver = Chrome(self.webdriver, chrome_options=self.chrome_options)
 
     def get_info(self, url):
         """Set up Beautiful Soup"""
