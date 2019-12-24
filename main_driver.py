@@ -117,6 +117,7 @@ def parser():
     parser.add_argument('--argba1', nargs='?', default=0, type=int, help='bathrooms lower limit')
     parser.add_argument('--argba2', nargs='?', type=int, help='bathrooms higher limit')
     parser.add_argument('--trips', action="store_true", help='find cheapest trip for given date')
+    parser.add_argument('--lat_lon', action="store_true", help='add latitudes and longitudes to de DB')
     args = parser.parse_args()
     return args, parser
 
@@ -152,6 +153,8 @@ def main():
         df = DB.fill_cheapest_trip('TLV', '2020-03-26', '2020-04-02', 5, 4, 'ILS', cheap=True)
         print(df)
         print("The database has been filled with the cheapest trip")
+    elif args.lat_lon:
+        DB.add_lon_lat_to_db()
     else:
         print(
             "\nThere were not enough parameters to scrap, please be sure to input at least the '-G' or '--city' "
