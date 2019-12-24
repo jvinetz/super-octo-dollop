@@ -20,6 +20,13 @@ class Fly:
             client_secret=code
         )
 
+    def lat_lon_by_city(self, city):
+        geolocator = Nominatim(user_agent="ITC_DM")
+        location = geolocator.geocode(city, timeout=2)
+        latitude = location.latitude
+        longitude = location.longitude
+        return latitude,longitude
+
     def find_airport_by_city_name(self, city):
         geolocator = Nominatim(user_agent="ITC_DM")
         location = geolocator.geocode(city, timeout=2)

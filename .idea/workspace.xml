@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a7b34131-91ed-4832-b119-735c74920c99" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/API/Fly_API.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/Fly_API.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB1.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB1.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +43,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.jupy">
+  <component name="RunManager" selected="Python.DB1">
     <configuration name="DB" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="super-octo-dollop" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -155,8 +158,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.jupy" />
         <item itemvalue="Python.DB1" />
+        <item itemvalue="Python.jupy" />
         <item itemvalue="Python.currency_API" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.DB" />
@@ -188,7 +191,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577142885852</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Adding trip cost calculation">
+      <created>1577201756546</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1577201756546</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -214,13 +224,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DB.py</url>
-          <line>415</line>
+          <line>441</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DB.py</url>
-          <line>254</line>
+          <line>280</line>
           <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DB.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

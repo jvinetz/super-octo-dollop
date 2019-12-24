@@ -78,6 +78,32 @@ class DB:
         except mysql.connector.errors.DatabaseError:
             print('trip table already exist')
 
+    def add_lon_lat_to_db(self):
+        try:
+            self.my_cursor.execute('''ALTER TABLE city ADD COLUMN lon FLOAT(10) DEFAULT "" ,
+                                        ADD COLUMN lat FLOAT(10) DEFAULT "" ''')
+            self.my_cursor.execute('''UPDATE city
+                                        SET lon = 0,
+                                         SET lat = 0''')
+            self.my_db.commit()
+        except:
+            print('columns already exist')
+        self.my_cursor.execute('SELECT city FROM city')
+        result = self.my_cursor.fetchall()
+        for city in result:
+            lat,lon = self.fly.lat_lon_by_city(city[0])
+            print(lat,lon)
+            self.my_cursor.execute(f'''UPDATE  city 
+                                        SET 
+                                            lon = {lon},
+                                            lat = {lat}
+                                        WHERE
+                                            city = "{city[0]}" 
+                                        ''')
+            self.my_db.commit()
+
+
+
     def fill_cheapest_trip(self, from_airport, date_departure, date_return, peoples, sleeps, currency, cheap=True):
         curr_converter = Currency(currency)
         # Verification
