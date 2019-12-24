@@ -99,7 +99,7 @@ class DB:
                 total_fly_cost = (fly_cost_a_usd + fly_cost_r_usd) * peoples / curr_converter.get_rate(BASE_CURR_FLY)
                 self.my_cursor.execute(f'''SELECT min(p.price), c.name 
                                             FROM place as p
-                                            JOIN currency as c on c.id = p.currency_ID
+                                            JOIN currency as c on c.id = p.currency
                                             WHERE sleeps >= {sleeps} and city = "{city}"
                                             Group By c.name
                                             ''')
