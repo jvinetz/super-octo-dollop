@@ -116,7 +116,7 @@ def parser():
     parser.add_argument('-ba', action="store_true", help='bathrooms')
     parser.add_argument('--argba1', nargs='?', default=0, type=int, help='bathrooms lower limit')
     parser.add_argument('--argba2', nargs='?', type=int, help='bathrooms higher limit')
-    parser.add_argument('--curr', action="store_true", help='currency')
+    parser.add_argument('--trips', action="store_true", help='find cheapest trip for given date')
     args = parser.parse_args()
     return args, parser
 
@@ -148,9 +148,10 @@ def main():
             scraper = Scraper()
             df = scraper.global_update()
             DB.update_global(df)
-
+    elif args.trips:
+        df = DB.fill_cheapest_trip('TLV', '2020-03-26', '2020-04-02', 5, 4, 'ILS', cheap=True)
         print(df)
-        print("The database has been created/updated")
+        print("The database has been filled with the cheapest trip")
     else:
         print(
             "\nThere were not enough parameters to scrap, please be sure to input at least the '-G' or '--city' "
